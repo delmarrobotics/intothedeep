@@ -21,7 +21,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,8 +61,6 @@ public class Drive extends Thread {
     public DcMotorEx rightFrontDrive = null;  //  Used to control the right front drive wheel
     public DcMotorEx leftBackDrive = null;    //  Used to control the left back drive wheel
     public DcMotorEx rightBackDrive = null;   //  Used to control the right back drive wheel
-
-    public  Encoder sideEncoder;
 
     private IMU imu;
     private NormalizedColorSensor colorSensor = null;

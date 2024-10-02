@@ -18,7 +18,7 @@ public class Gyro {
     GyroType gyroType;
     HardwareDevice device;
     IMU imu = null;
-    AHRS navx = null;
+    //AHRS navx = null;
 
     // for simulated gyro
     private final ElapsedTime elapsedTime = new ElapsedTime();
@@ -29,7 +29,7 @@ public class Gyro {
     private int sampleRate = 50;  // in hertz
 
     public Gyro (HardwareMap hardwareMap, String deviceName) {
-
+        /*
         device = hardwareMap.get(deviceName);
 
         if (device instanceof NavxMicroNavigationSensor) {
@@ -132,6 +132,7 @@ public class Gyro {
             lastTime = time;
         }
         return yaw;
+         */
     }
 
 }
