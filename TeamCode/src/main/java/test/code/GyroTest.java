@@ -32,8 +32,8 @@ package test.code;
 import android.annotation.SuppressLint;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.kauailabs.navx.ftc.AHRS;
-import com.kauailabs.navx.ftc.navXPIDController;
+//import com.kauailabs.navx.ftc.AHRS;
+//import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -68,7 +68,7 @@ public class GyroTest extends LinearOpMode {
     private Telemetry.Item speedMsg;
 
     private Drive drive;
-    private AHRS gyro;
+    //private AHRS gyro;
 
     Gyro gyro1;
     Gyro gyro2;
@@ -88,8 +88,8 @@ public class GyroTest extends LinearOpMode {
 
         gyro1 = new Gyro(hardwareMap, "navx");
         gyro2 = new Gyro(hardwareMap, "imu");
-        gyro3 = new Gyro(hardwareMap, "imuExpansion",
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+        //gyro3 = new Gyro(hardwareMap, "imuExpansion",
+        //       RevHubOrientationOnRobot.LogoFacingDirection.DOWN, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
 
         drive = new Drive(this);
         initNavx();
@@ -160,9 +160,9 @@ public class GyroTest extends LinearOpMode {
             }
 
             setDisplaySpeed();
-            compassMsg.setValue("%f", gyro.getCompassHeading());
-            yawNavxMsg.setValue("%6.2f (error: %6.2f)", gyro1.getYaw(), heading - gyro1.getYaw());
-            yawImuMsg.setValue("%6.2f (error: %6.2f)", gyro2.getYaw(), heading - gyro2.getYaw());
+            //compassMsg.setValue("%f", gyro.getCompassHeading());
+            //yawNavxMsg.setValue("%6.2f (error: %6.2f)", gyro1.getYaw(), heading - gyro1.getYaw());
+            //yawImuMsg.setValue("%6.2f (error: %6.2f)", gyro2.getYaw(), heading - gyro2.getYaw());
             telemetry.update();
 
             displayDashboardTelemetry();
@@ -181,11 +181,11 @@ public class GyroTest extends LinearOpMode {
         dashboardTelemetry.addLine("  x - turn south");
         dashboardTelemetry.addLine("  y - turn north");
 
-        dashboardTelemetry.addData("1. speed", "%4.2f", speed);
+        /*dashboardTelemetry.addData("1. speed", "%4.2f", speed);
         dashboardTelemetry.addData("3. yaw navx", "%6.2f (error: %6.2f)", gyro1.getYaw(), heading - gyro1.getYaw());
         dashboardTelemetry.addData("4. yaw imu (control)", "%6.2f (error: %6.2f)", gyro2.getYaw(), heading - gyro2.getYaw());
         dashboardTelemetry.addData("5. yaw imu (expansion)", "%6.2f (error: %6.2f)", gyro3.getYaw(), heading - gyro3.getYaw());
-
+        */
         dashboardTelemetry.update();
     }
 
@@ -195,19 +195,19 @@ public class GyroTest extends LinearOpMode {
 
     private void initNavx ()
     {
-        gyro = AHRS.getInstance(hardwareMap.get(NavxMicroNavigationSensor.class, "navx"),
-                AHRS.DeviceDataType.kProcessedData);
+        //gyro = AHRS.getInstance(hardwareMap.get(NavxMicroNavigationSensor.class, "navx"),
+        //        AHRS.DeviceDataType.kProcessedData);
 
-        while ( gyro.isCalibrating() ) {
+        /*while ( gyro.isCalibrating() ) {
             if (! opModeIsActive()) break;
         }
-        gyro.zeroYaw();
+        gyro.zeroYaw();*/
     }
 
     private double getOrientation () {
-        return gyro1.getYaw();
+        //return gyro1.getYaw();
+        return 0;
     }
-
     /**
      * Calculate to turn speed. The turn speed to ramped up based on time, and ramped down based on
      * degrees remaining to turn.

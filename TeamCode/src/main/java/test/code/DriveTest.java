@@ -91,12 +91,12 @@ public class DriveTest extends LinearOpMode {
         //newDrive();
 
         drive.setBraking(true);
-        drive.resetOdometers();
+        //drive.resetOdometers();
 
         while (opModeIsActive()) {
 
-            int odometerPos = Math.abs(drive.odometer.getCurrentPosition());
-            double odometerInches = odometerPos / (2000/((48/25.4)*Math.PI));
+            //int odometerPos = Math.abs(drive.odometer.getCurrentPosition());
+            //double odometerInches = odometerPos / (2000/((48/25.4)*Math.PI));
 
             validateConfig();
             telemetry.addLine("Controls:");
@@ -104,9 +104,9 @@ public class DriveTest extends LinearOpMode {
             telemetry.addLine("  a - move backward\n");
             telemetry.addData("Speed", "%4.2f", speed);
             telemetry.addData("Inches", "%4.1f", inches);
-            telemetry.addData("Drift", "%8.2f", drive.totalDrift);
+            //telemetry.addData("Drift", "%8.2f", drive.totalDrift);
             telemetry.addData("Yaw:", "%6.2f", drive.getOrientation() );
-            telemetry.addData("Odometer:", "%d  %6.2f", odometerPos, odometerInches);
+            //telemetry.addData("Odometer:", "%d  %6.2f", odometerPos, odometerInches);
             telemetry.addData("Voltage: %f", voltageSensor.getVoltage());
 
             telemetry.update();
@@ -477,9 +477,9 @@ public class DriveTest extends LinearOpMode {
 
         drive.resetOrientation();
         drive.resetEncoders();
-        drive.resetOdometers();
+        //drive.resetOdometers();
 
-        drive.moveDistanceWithPIDControl (direction, speed, inches, 0);
+        //drive.moveDistanceWithPIDControl (direction, speed, inches, 0);
 
         telemetry.addData("Yaw:", "%6.2f", drive.getOrientation() );
         telemetry.update();
@@ -505,16 +505,16 @@ public class DriveTest extends LinearOpMode {
         int rightBackPos = Math.abs(drive.rightBackDrive.getCurrentPosition());
         int maxPos = Math.max(Math.max(Math.max(leftFrontPos, rightFrontPos), leftBackPos), rightBackPos);
 
-        int odometerPos = Math.abs(drive.odometer.getCurrentPosition());
-        double odometerInches = odometerPos / (2000/((48/25.4)*Math.PI));
+        //int odometerPos = Math.abs(drive.odometer.getCurrentPosition());
+        //double odometerInches = odometerPos / (2000/((48/25.4)*Math.PI));
 
         Logger.message("\n");
         Logger.message("left front  %6d    %5.2f    %6.3f", leftFrontPos,  (leftFrontPos / COUNTS_PER_INCH),  (((double)leftFrontPos  / maxPos) - 1) * 100);
         Logger.message("right front %6d    %5.2f    %6.3f", rightFrontPos, (rightFrontPos / COUNTS_PER_INCH), (((double)rightFrontPos / maxPos) - 1) * 100);
         Logger.message("left rear   %6d    %5.2f    %6.3f", leftBackPos,   (leftBackPos / COUNTS_PER_INCH),   (((double)leftBackPos   / maxPos) - 1) * 100);
         Logger.message("right rear  %6d    %5.2f    %6.3f", rightBackPos,  (rightBackPos / COUNTS_PER_INCH),  (((double)rightBackPos  / maxPos) - 1) * 100);
-        Logger.message("odometer    %6d    %5.2f",           odometerPos,   odometerInches);
-        Logger.message("error %6.2f", odometerInches - inches);
+        //Logger.message("odometer    %6d    %5.2f",           odometerPos,   odometerInches);
+        //Logger.message("error %6.2f", odometerInches - inches);
     }
 
     private void validateConfig () {

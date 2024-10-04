@@ -138,8 +138,8 @@ public class DriveToObject extends LinearOpMode {
   }
 
   private void setDisplayDistance () {
-    double distance = drive.distanceToObject();
-    distanceMsg.setValue("%6.2f", distance);
+    //double distance = drive.distanceToObject();
+    //distanceMsg.setValue("%6.2f", distance);
   }
 
   // Write the setting to a file

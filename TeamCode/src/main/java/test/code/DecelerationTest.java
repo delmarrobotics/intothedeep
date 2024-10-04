@@ -63,7 +63,7 @@ public class DecelerationTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             for (double power = MIN_POWER; power <= MAX_POWER; power += 0.05) {
-
+                /*
                 // move forward to calculate the overshoot error
                 double maxVelocity = move(power, 1, 0);
                 sleep(2000);
@@ -89,6 +89,7 @@ public class DecelerationTest extends LinearOpMode {
                 sleep(2000);
 
                 Logger.addLine("\n");
+                */
             }
         }
     }
@@ -98,7 +99,7 @@ public class DecelerationTest extends LinearOpMode {
         // Determine new target position
         int target = (int) (Math.max(INCHES_TO_DRIVE - error, 0) * drive.encoderTicksPerInch()) * sign;
 
-        for (DcMotor motor : drive.motors) {
+        /*for (DcMotor motor : drive.motors) {
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -127,8 +128,9 @@ public class DecelerationTest extends LinearOpMode {
         // Stop all motion;
         for (DcMotor motor : drive.motors)
             motor.setPower(0);
-
         return maxVelocity;
+        */
+        return 0;
     }
 
     private void displayResults(double power, double voltage, double maxVelocity, double error) {

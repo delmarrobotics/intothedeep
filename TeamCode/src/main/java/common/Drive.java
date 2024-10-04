@@ -41,9 +41,9 @@ public class Drive extends Thread {
     private final double COUNTS_PER_INCH =
             (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
-    private final double RAMP_DISTANCE = COUNTS_PER_INCH * 12;   // ramp down distance in encoder counts
-    private final double RAMP_TIME = 1000;                       // ramp up time in milliseconds
-    private final double RAMP_MIN_SPEED = 0.2;
+    private final double RAMP_DISTANCE = COUNTS_PER_INCH * 6;   // ramp down distance in encoder counts
+    private final double RAMP_TIME = 100;                       // ramp up time in milliseconds
+    private final double RAMP_MIN_SPEED = 0.4;
 
     private final double MIN_SPEED = 0.40;
     private final double MAX_SPEED = 0.9;
@@ -54,7 +54,7 @@ public class Drive extends Thread {
     // Color sensor
     static final float COLOR_SENSOR_GAIN = 1.75F;
 
-    public enum COLOR {RED, BLUE};
+    public enum COLOR {RED, BLUE, WHITE};
 
     //  Drive train motors
     public DcMotorEx leftFrontDrive = null;   //  Used to control the left front drive wheel
@@ -111,7 +111,7 @@ public class Drive extends Thread {
         }
 
         leftFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
