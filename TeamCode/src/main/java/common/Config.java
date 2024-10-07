@@ -15,5 +15,9 @@ public class Config {
     public static final String COLOR_SENSOR     = "colorSensor";
     public static final String DISTANCE_SENSOR  = "distanceSensor";
 
-    public static final String CAMERA           = "Webcam 1";
+    public static final String LEFT_ARM         = "leftArm";
+    public static final String RIGHT_ARM        = "rightArm";
+    public static final String ELBOW            = "elbow";
+
+    //public static final String CAMERA           = "Webcam 1";
 }

@@ -62,6 +62,9 @@ public class Drive extends Thread {
     public DcMotorEx leftBackDrive = null;    //  Used to control the left back drive wheel
     public DcMotorEx rightBackDrive = null;   //  Used to control the right back drive wheel
 
+    public DcMotorEx leftArm = null;
+    public DcMotorEx rightArm = null;
+
     private IMU imu;
     private NormalizedColorSensor colorSensor = null;
 
@@ -101,6 +104,9 @@ public class Drive extends Thread {
             leftBackDrive = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_BACK);
             rightBackDrive = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_BACK);
 
+            leftArm = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ARM);
+            rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
+
             colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, Config.COLOR_SENSOR);
             colorSensor.setGain(COLOR_SENSOR_GAIN);
 
@@ -115,7 +121,7 @@ public class Drive extends Thread {
         leftBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motors = Arrays.asList(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+        motors = Arrays.asList(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, leftArm);
 
          for (DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

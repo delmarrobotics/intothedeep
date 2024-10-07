@@ -54,7 +54,7 @@ public class Robot {
     }
 
     public void startVision () {
-        vision = new Vision(opMode);
+        //vision = new Vision(opMode);
     }
 
     public void turn(double degrees) {

@@ -65,7 +65,7 @@ public class CalibrateMotor extends LinearOpMode {
     private final double incrementMedium = 10;
     private final double incrementFast = 100;
 
-    private final double speed = 0.25;
+    private final double speed = 1;
     private DcMotor motor   = null;
 
     private static class MotorInfo implements Comparable<MotorInfo>{
@@ -103,7 +103,7 @@ public class CalibrateMotor extends LinearOpMode {
         Telemetry.Item homeMsg = telemetry.addData("Home position", 0);
         Telemetry.Item targetMsg = telemetry.addData("Target position", 0);
 
-        setDisplayName (motorNameMsg);
+        setDisplayName(motorNameMsg);
         setDisplayDirection(directionMsg);
         setDisplayPosition(positionMsg);
         setDisplayHome(homeMsg);

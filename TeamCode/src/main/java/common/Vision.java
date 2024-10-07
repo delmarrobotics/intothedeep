@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Vision {
 
-    public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
+    /*public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
         private final AtomicReference<Bitmap> lastFrame =
                 new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
@@ -294,7 +294,7 @@ public class Vision {
             for (gain = 0; gain < 300; gain += 5 ){
                 gainControl.setGain(gain);
                 opMode.sleep(500);
-
+                /
                 /*
                 if (findTeamElement(300)) {
                    Logger.message("found - exposure: %d gain: %d  Confidence: %.2f", exposure, gain, element.getConfidence());
@@ -306,7 +306,7 @@ public class Vision {
                     Logger.message("not found - exposure: %d gain: %d", exposure, gain);
                  }
 
-                 */
+                 *//*
             }
         }
         Logger.message("Best setting -  exposure: %d gain: %d", bestExposure, bestGain);
@@ -320,5 +320,5 @@ public class Vision {
     public int getZoom() {
         PtzControl ptzControl = visionPortal.getCameraControl(PtzControl.class);
         return ptzControl.getZoom();
-    }
+    }*/
 }
