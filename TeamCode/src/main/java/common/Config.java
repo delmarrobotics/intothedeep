@@ -18,6 +18,7 @@ public class Config {
     public static final String LEFT_ARM         = "leftArm";
     public static final String RIGHT_ARM        = "rightArm";
     public static final String ELBOW            = "elbow";
+    public static final String WRIST            = "wrist";
 
     //public static final String CAMERA           = "Webcam 1";
 }

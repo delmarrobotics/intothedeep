@@ -46,7 +46,7 @@ public class Drive extends Thread {
     private final double RAMP_MIN_SPEED = 0.4;
 
     private final double MIN_SPEED = 0.40;
-    private final double MAX_SPEED = 0.9;
+    private final double MAX_SPEED = 1;
     private final double MAX_ROTATE_SPEED = 1;
 
     public enum DIRECTION { FORWARD, BACK, LEFT, RIGHT, TURN_LEFT, TURN_RIGHT, DRIVER, STOOPED }
@@ -61,9 +61,6 @@ public class Drive extends Thread {
     public DcMotorEx rightFrontDrive = null;  //  Used to control the right front drive wheel
     public DcMotorEx leftBackDrive = null;    //  Used to control the left back drive wheel
     public DcMotorEx rightBackDrive = null;   //  Used to control the right back drive wheel
-
-    public DcMotorEx leftArm = null;
-    public DcMotorEx rightArm = null;
 
     private IMU imu;
     private NormalizedColorSensor colorSensor = null;
@@ -104,9 +101,6 @@ public class Drive extends Thread {
             leftBackDrive = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_BACK);
             rightBackDrive = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_BACK);
 
-            leftArm = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ARM);
-            rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
-
             colorSensor = opMode.hardwareMap.get(NormalizedColorSensor.class, Config.COLOR_SENSOR);
             colorSensor.setGain(COLOR_SENSOR_GAIN);
 
@@ -121,7 +115,7 @@ public class Drive extends Thread {
         leftBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motors = Arrays.asList(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, leftArm);
+        motors = Arrays.asList(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
 
          for (DcMotor motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Robot {
 
     public Drive      drive = null;
+    public Arm        arm = null;
     public Vision     vision = null;
 
     /* Declare OpMode members. */
@@ -34,6 +35,7 @@ public class Robot {
     public void init() {
 
         drive = new Drive(opMode);
+        arm = new Arm(opMode);
 
         try {
             /*dropper = opMode.hardwareMap.get(Servo.class, Config.PIXEL_DROPPER);
