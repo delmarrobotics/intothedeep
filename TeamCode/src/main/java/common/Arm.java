@@ -16,8 +16,8 @@ public class Arm {
     public enum ARM_POSITION { HOME, LOW, HIGH }
     private enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
 
-    static final double ELBOW_SPEED = 1;
-    static final double ARM_SPEED = 1;
+    static final double ELBOW_SPEED = 0.1;
+    static final double ARM_SPEED = 0.1;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
@@ -140,28 +140,31 @@ public class Arm {
         */
     }
 
-    public void pixelWristMove(double position) {
+    public void wristMove(double position) {
         wrist.setPosition(position);
     }
 
-    public void enablePixelArm (boolean enable) {
+    public void enablelArm (boolean enable) {
         armActive = enable;
     }
 
 
     public void run () {
 
-        if (armActive)
+        if (armActive) {
+            opMode.telemetry.addData("armActive", "active");
             control();
+        }
 
-        if (state == ARM_STATE.NONE)
+        if (state == ARM_STATE.NONE) {
             return;
+        }
 
         if (state == ARM_STATE.MOVE_LOW) {
             if (stateTime.milliseconds() < 500)
                 return;
             pixelArmMove((ARM_OUT_LOW));
-            pixelWristMove(WRIST_DROP_LOW);
+            wristMove(WRIST_DROP_LOW);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to low position");
 
@@ -170,7 +173,7 @@ public class Arm {
             if (stateTime.milliseconds() < 500)
                 return;
             pixelArmMove((ARM_OUT_HIGH));
-            pixelWristMove(WRIST_DROP_HIGH);
+            wristMove(WRIST_DROP_HIGH);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to high position");
 
@@ -213,7 +216,7 @@ public class Arm {
             state = ARM_STATE.MOVE_HIGH;
             Logger.message("pixel elbow to high position");
         } else if (position == ARM_POSITION.HOME) {
-            pixelWristMove(WRIST_HOME);
+            wristMove(WRIST_HOME);
             pixelArmMove(ARM_IN);
             state = ARM_STATE.MOVE_HOME;
             Logger.message("pixel wrist and arm to home position");
@@ -226,13 +229,13 @@ public class Arm {
             elbowMove(ELBOW_UP_LOW);
             opMode.sleep(500);
             pixelArmMove((ARM_OUT_LOW));
-            pixelWristMove(WRIST_DROP_LOW);
+            wristMove(WRIST_DROP_LOW);
         } else if (position == ARM_POSITION.HIGH) {
             elbowMove(ELBOW_UP_HIGH);
             pixelArmMove((ARM_OUT_HIGH));
-            pixelWristMove(WRIST_DROP_HIGH);
+            wristMove(WRIST_DROP_HIGH);
         } else if (position == ARM_POSITION.HOME) {
-            pixelWristMove(WRIST_HOME);
+            wristMove(WRIST_HOME);
             pixelArmMove(ARM_IN);
             elbowMove(ELBOW_DOWN);
             while (leftArm.isBusy()) {
@@ -246,7 +249,6 @@ public class Arm {
     }
 
     public boolean positionCommand () {
-
         Gamepad gamepad = opMode.gamepad2;
         return (gamepad.a || gamepad.b || gamepad.x);
     }
@@ -342,7 +344,7 @@ public class Arm {
                 rightArm.setPower(ARM_SPEED);
             } else if (gamepad.left_stick_x < 0)
                 leftArm.setPower(-ARM_SPEED);
-                leftArm.setPower(-ARM_SPEED);
+                rightArm.setPower(-ARM_SPEED);
             while (true) {
                 if (gamepad.left_stick_x == 0)
                     break;

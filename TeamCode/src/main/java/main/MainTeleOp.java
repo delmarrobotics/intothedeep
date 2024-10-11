@@ -41,6 +41,7 @@ public class MainTeleOp extends LinearOpMode {
         runtime.reset();
 
         displayControls();
+        robot.arm.displayControls();
         displayControls2();
         mode = GamepadMode.ONE;
 
@@ -83,12 +84,13 @@ public class MainTeleOp extends LinearOpMode {
                 }
 
             } else if (mode == GamepadMode.ONE) {
-                /*if (robot.pixelArm.positionCommand())
-                    robot.intakeOff();
-                else if (robot.pixelArm.dropCommand())
-                    robot.dropPixel();
-                if (robot.pixelArm.control())
-                    continue;*/
+                if (robot.arm.positionCommand())
+                    //robot.intakeOff();
+                    telemetry.addData("intakeOff", "intakeOff");
+                else if (robot.arm.dropCommand())
+                    //robot.dropPixel();
+                if (robot.arm.control())
+                    continue;
             }
 
             if (gamepad1.a) {
