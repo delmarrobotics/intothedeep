@@ -7,6 +7,7 @@ package common;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -62,17 +63,17 @@ public class Arm {
             elbow = opMode.hardwareMap.get(DcMotorEx.class, Config.ELBOW);
             wrist = opMode.hardwareMap.get(Servo.class, Config.WRIST);
 
-            leftArm.setDirection(DcMotor.Direction.REVERSE);
+            leftArm.setDirection(DcMotor.Direction.FORWARD);
             leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            rightArm.setDirection(DcMotor.Direction.REVERSE);
+            rightArm.setDirection(DcMotor.Direction.FORWARD);
             rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            elbow.setDirection(DcMotor.Direction.REVERSE);
+            elbow.setDirection(DcMotor.Direction.FORWARD);
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -91,6 +92,7 @@ public class Arm {
      * @param newPosition position to move to
      */
     public void elbowMove(int newPosition) {
+        opMode.telemetry.addData("elobow", "elbowMove");
 
         int from = elbow.getCurrentPosition();
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -342,9 +344,10 @@ public class Arm {
             if (gamepad.left_stick_x > 0) {
                 leftArm.setPower(ARM_SPEED);
                 rightArm.setPower(ARM_SPEED);
-            } else if (gamepad.left_stick_x < 0)
+            } else if (gamepad.left_stick_x < 0) {
                 leftArm.setPower(-ARM_SPEED);
                 rightArm.setPower(-ARM_SPEED);
+            }
             while (true) {
                 if (gamepad.left_stick_x == 0)
                     break;
