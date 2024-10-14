@@ -68,7 +68,7 @@ public class Arm {
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            rightArm.setDirection(DcMotor.Direction.FORWARD);
+            rightArm.setDirection(DcMotor.Direction.REVERSE);
             rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -79,7 +79,7 @@ public class Arm {
             elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             wrist.setPosition(WRIST_HOME);
-            pixelArmMove(ARM_IN);
+            armMove(ARM_IN);
 
         } catch (Exception e) {
             Logger.error(e, "Pixel arm hardware not found");
@@ -117,8 +117,8 @@ public class Arm {
      *
      * @param newPosition position to move to
      */
-    public void pixelArmMove(int newPosition) {
-
+    public void armMove(int newPosition) {
+        Logger.message("armMove %d", newPosition);
         int from = leftArm.getCurrentPosition();
         leftArm.setTargetPosition(newPosition);
         rightArm.setTargetPosition(newPosition);
@@ -152,6 +152,7 @@ public class Arm {
 
 
     public void run () {
+        Logger.message("run");
 
         if (armActive) {
             opMode.telemetry.addData("armActive", "active");
@@ -165,7 +166,7 @@ public class Arm {
         if (state == ARM_STATE.MOVE_LOW) {
             if (stateTime.milliseconds() < 500)
                 return;
-            pixelArmMove((ARM_OUT_LOW));
+            armMove((ARM_OUT_LOW));
             wristMove(WRIST_DROP_LOW);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to low position");
@@ -174,7 +175,7 @@ public class Arm {
         } else if (state == ARM_STATE.MOVE_HIGH) {
             if (stateTime.milliseconds() < 500)
                 return;
-            pixelArmMove((ARM_OUT_HIGH));
+            armMove((ARM_OUT_HIGH));
             wristMove(WRIST_DROP_HIGH);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to high position");
@@ -219,7 +220,7 @@ public class Arm {
             Logger.message("pixel elbow to high position");
         } else if (position == ARM_POSITION.HOME) {
             wristMove(WRIST_HOME);
-            pixelArmMove(ARM_IN);
+            armMove(ARM_IN);
             state = ARM_STATE.MOVE_HOME;
             Logger.message("pixel wrist and arm to home position");
         }
@@ -230,15 +231,15 @@ public class Arm {
         if (position == ARM_POSITION.LOW) {
             elbowMove(ELBOW_UP_LOW);
             opMode.sleep(500);
-            pixelArmMove((ARM_OUT_LOW));
+            armMove((ARM_OUT_LOW));
             wristMove(WRIST_DROP_LOW);
         } else if (position == ARM_POSITION.HIGH) {
             elbowMove(ELBOW_UP_HIGH);
-            pixelArmMove((ARM_OUT_HIGH));
+            armMove((ARM_OUT_HIGH));
             wristMove(WRIST_DROP_HIGH);
         } else if (position == ARM_POSITION.HOME) {
             wristMove(WRIST_HOME);
-            pixelArmMove(ARM_IN);
+            armMove(ARM_IN);
             elbowMove(ELBOW_DOWN);
             while (leftArm.isBusy()) {
                 if (!opMode.opModeIsActive()) {
