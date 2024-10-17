@@ -17,16 +17,16 @@ public class Arm {
     public enum ARM_POSITION { HOME, LOW, HIGH }
     private enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
 
-    static final double ELBOW_SPEED = 0.1;
-    static final double ARM_SPEED = 0.1;
+    static final double ELBOW_SPEED = 1;
+    static final double ARM_SPEED = 1;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
-    public static final int    ELBOW_UP_LOW    = -1870; //ToDo edit elbow value
-    public static final int    ELBOW_UP_HIGH   = -2700; //ToDo edit elbow value
+    public static final int    ELBOW_UP_LOW    = -1000; //ToDo edit elbow value
+    public static final int    ELBOW_UP_HIGH   = -1003; //ToDo edit elbow value
 
     public static final int    ARM_IN          = 0;
-    public static final int    ARM_OUT_LOW     = 1280; //ToDo edit arm value
+    public static final int    ARM_OUT_LOW     = 2500; //ToDo edit arm value
     public static final int    ARM_OUT_HIGH    = 2750; //ToDo edit arm value
 
     public static final double WRIST_HOME         = 0;
@@ -73,7 +73,7 @@ public class Arm {
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            elbow.setDirection(DcMotor.Direction.FORWARD);
+            elbow.setDirection(DcMotor.Direction.REVERSE);
             elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -92,7 +92,7 @@ public class Arm {
      * @param newPosition position to move to
      */
     public void elbowMove(int newPosition) {
-        opMode.telemetry.addData("elobow", "elbowMove");
+        opMode.telemetry.addData("elbow", "elbowMove %d", newPosition);
 
         int from = elbow.getCurrentPosition();
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -155,15 +155,17 @@ public class Arm {
         Logger.message("run");
 
         if (armActive) {
-            opMode.telemetry.addData("armActive", "active");
+            Logger.message("armActive");
             control();
         }
 
         if (state == ARM_STATE.NONE) {
+            Logger.message("none");
             return;
         }
 
         if (state == ARM_STATE.MOVE_LOW) {
+            Logger.message("low");
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_LOW));
@@ -173,6 +175,7 @@ public class Arm {
 
 
         } else if (state == ARM_STATE.MOVE_HIGH) {
+            Logger.message("high");
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_HIGH));
@@ -181,6 +184,7 @@ public class Arm {
             Logger.message("pixel arm and wrist to high position");
 
         } else if (state == ARM_STATE.MOVE_HOME) {
+            Logger.message("home");
             if (stateTime.milliseconds() < 1000)
                 return;
             elbowMove(ELBOW_DOWN);
@@ -194,6 +198,7 @@ public class Arm {
             Logger.message("pixel arm power off");
 
         } else if (state == ARM_STATE.ARM_UP) {
+            Logger.message("up");
             if (stateTime.milliseconds() < 10000)
                 return;
             leftArm.setPower(0);
@@ -209,7 +214,7 @@ public class Arm {
 
     public void positionArmAsyn(ARM_POSITION position) {
 
-        stateTime.reset();;
+        stateTime.reset();
         if (position == ARM_POSITION.LOW) {
             elbowMove(ELBOW_UP_LOW);
             Logger.message("pixel elbow to low position");
@@ -268,7 +273,8 @@ public class Arm {
                         "  b - position arm at mid position\n" +
                         "  x - position arm at high position\n" +
                         "  y - position arm at pickup position\n" +
-                        "  right triggers - drop pixels\n"
+                        "  right triggers - drop pixels\n" +
+                        elbow.getCurrentPosition() + "\n"
                 //"  left stick - move elbow (u/d)  arm (l/r)\n" +
                 //"  right stick - manual rotate the hands\n"
         );
@@ -278,7 +284,6 @@ public class Arm {
      * Manually control the pixel arm
      */
     public boolean control() {
-
         Gamepad gamepad = opMode.gamepad2;
         boolean handled = true;
 

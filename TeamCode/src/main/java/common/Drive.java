@@ -110,10 +110,10 @@ public class Drive extends Thread {
             Logger.error(e, "Hardware not found");
         }
 
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
         motors = Arrays.asList(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
 
@@ -153,7 +153,7 @@ public class Drive extends Thread {
             Gamepad gamepad = opMode.gamepad1;
             double x = -gamepad.left_stick_y / 2.0;  // Reduce drive rate to 50%.
             double y = -gamepad.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
-            double yaw = gamepad.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
+            double yaw = -gamepad.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
             double speed = (gamepad.left_trigger * (MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
 
             // limit acceleration and deceleration to prevent skidding.

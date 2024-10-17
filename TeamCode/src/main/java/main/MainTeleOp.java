@@ -84,13 +84,14 @@ public class MainTeleOp extends LinearOpMode {
                 }
 
             } else if (mode == GamepadMode.ONE) {
-                if (robot.arm.positionCommand())
+                /*if (robot.arm.positionCommand())
                     //robot.intakeOff();
                     telemetry.addData("intakeOff", "intakeOff");
                 else if (robot.arm.dropCommand())
                     //robot.dropPixel();
                 if (robot.arm.control())
-                    continue;
+                    continue;*/
+                robot.arm.control();
             }
 
             if (gamepad1.a) {
