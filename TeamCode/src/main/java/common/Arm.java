@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Arm {
 
@@ -18,12 +19,12 @@ public class Arm {
     private enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
 
     static final double ELBOW_SPEED = 1;
-    static final double ARM_SPEED = 1;
+    static final double ARM_SPEED = 0.4;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
-    public static final int    ELBOW_UP_LOW    = -1000; //ToDo edit elbow value
-    public static final int    ELBOW_UP_HIGH   = -1003; //ToDo edit elbow value
+    public static final int    ELBOW_UP_LOW    = -1760; //ToDo edit elbow value
+    public static final int    ELBOW_UP_HIGH   = -2645; //ToDo edit elbow value
 
     public static final int    ARM_IN          = 0;
     public static final int    ARM_OUT_LOW     = 2500; //ToDo edit arm value
@@ -38,6 +39,7 @@ public class Arm {
     private DcMotor leftArm   = null;
     private DcMotor rightArm = null;
     private Servo   wrist = null;
+    private CRServo intake = null;
 
     private ARM_STATE state  = ARM_STATE.NONE;
     private final ElapsedTime stateTime = new ElapsedTime();
@@ -46,6 +48,9 @@ public class Arm {
     private boolean bPressed = false;
     private boolean xPressed = false;
     private boolean yPressed = false;
+
+    private enum intakeStates { OFF, FORWARD, REVERSE }
+    private intakeStates iState = intakeStates.OFF;
 
     private boolean armActive = false;
 
@@ -62,6 +67,7 @@ public class Arm {
             rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
             elbow = opMode.hardwareMap.get(DcMotorEx.class, Config.ELBOW);
             wrist = opMode.hardwareMap.get(Servo.class, Config.WRIST);
+            intake = opMode.hardwareMap.get(CRServo.class, Config.INTAKE);
 
             leftArm.setDirection(DcMotor.Direction.FORWARD);
             leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -78,6 +84,9 @@ public class Arm {
             elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+            intake.setDirection(DcMotorSimple.Direction.FORWARD);
+            intake.setPower(0);
+
             wrist.setPosition(WRIST_HOME);
             armMove(ARM_IN);
 
@@ -87,7 +96,7 @@ public class Arm {
     }
 
     /**
-     * Move the pixel arm elbow to the specified position
+     * Move the arm elbow to the specified position
      *
      * @param newPosition position to move to
      */
@@ -380,6 +389,22 @@ public class Arm {
             }
             Logger.message("wrist position %f", wrist.getPosition());
 
+        } else if(gamepad.right_bumper) {
+            if (iState == intakeStates.OFF || iState == intakeStates.REVERSE) {
+                intake.setPower(1);
+                iState = intakeStates.FORWARD;
+            } else {
+                intake.setPower(0);
+                iState = intakeStates.OFF;
+            }
+        } else if(gamepad.left_bumper) {
+            if (iState == intakeStates.OFF || iState == intakeStates.FORWARD) {
+                intake.setPower(-1);
+                iState = intakeStates.REVERSE;
+            } else {
+                intake.setPower(0);
+                iState = intakeStates.OFF;
+            }
         } else {
             handled = false;
         }
