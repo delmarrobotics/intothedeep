@@ -19,7 +19,7 @@ public class Arm {
     private enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
 
     static final double ELBOW_SPEED = 1;
-    static final double ARM_SPEED = 0.4;
+    static final double ARM_SPEED = 1;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
@@ -38,7 +38,7 @@ public class Arm {
     private DcMotor elbow = null;
     private DcMotor leftArm   = null;
     private DcMotor rightArm = null;
-    private Servo   wrist = null;
+    private CRServo   wrist = null;
     private CRServo intake = null;
 
     private ARM_STATE state  = ARM_STATE.NONE;
@@ -66,7 +66,7 @@ public class Arm {
             leftArm = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ARM);
             rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
             elbow = opMode.hardwareMap.get(DcMotorEx.class, Config.ELBOW);
-            wrist = opMode.hardwareMap.get(Servo.class, Config.WRIST);
+            wrist = opMode.hardwareMap.get(CRServo.class, Config.WRIST);
             intake = opMode.hardwareMap.get(CRServo.class, Config.INTAKE);
 
             leftArm.setDirection(DcMotor.Direction.FORWARD);
@@ -87,7 +87,7 @@ public class Arm {
             intake.setDirection(DcMotorSimple.Direction.FORWARD);
             intake.setPower(0);
 
-            wrist.setPosition(WRIST_HOME);
+            //wrist.setPosition(WRIST_HOME);
             armMove(ARM_IN);
 
         } catch (Exception e) {
@@ -151,9 +151,9 @@ public class Arm {
         */
     }
 
-    public void wristMove(double position) {
+    /*public void wristMove(double position) {
         wrist.setPosition(position);
-    }
+    }*/
 
     public void enablelArm (boolean enable) {
         armActive = enable;
@@ -178,7 +178,7 @@ public class Arm {
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_LOW));
-            wristMove(WRIST_DROP_LOW);
+            //wristMove(WRIST_DROP_LOW);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to low position");
 
@@ -188,7 +188,7 @@ public class Arm {
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_HIGH));
-            wristMove(WRIST_DROP_HIGH);
+            //wristMove(WRIST_DROP_HIGH);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to high position");
 
@@ -233,7 +233,7 @@ public class Arm {
             state = ARM_STATE.MOVE_HIGH;
             Logger.message("pixel elbow to high position");
         } else if (position == ARM_POSITION.HOME) {
-            wristMove(WRIST_HOME);
+            //wristMove(WRIST_HOME);
             armMove(ARM_IN);
             state = ARM_STATE.MOVE_HOME;
             Logger.message("pixel wrist and arm to home position");
@@ -246,13 +246,13 @@ public class Arm {
             elbowMove(ELBOW_UP_LOW);
             opMode.sleep(500);
             armMove((ARM_OUT_LOW));
-            wristMove(WRIST_DROP_LOW);
+            //wristMove(WRIST_DROP_LOW);
         } else if (position == ARM_POSITION.HIGH) {
             elbowMove(ELBOW_UP_HIGH);
             armMove((ARM_OUT_HIGH));
-            wristMove(WRIST_DROP_HIGH);
+            //wristMove(WRIST_DROP_HIGH);
         } else if (position == ARM_POSITION.HOME) {
-            wristMove(WRIST_HOME);
+            //wristMove(WRIST_HOME);
             armMove(ARM_IN);
             elbowMove(ELBOW_DOWN);
             while (leftArm.isBusy()) {
@@ -376,7 +376,7 @@ public class Arm {
 
         } else if (gamepad.right_stick_y != 0) {
             // manually rotate the bucket
-            while (gamepad.right_stick_y != 0) {
+            /*while (gamepad.right_stick_y != 0) {
                 double position = wrist.getPosition();
                 if (Double.isNaN(position))
                     position = WRIST_HOME;
@@ -387,9 +387,16 @@ public class Arm {
                 wrist.setPosition(position);
                 opMode.sleep(100);
             }
-            Logger.message("wrist position %f", wrist.getPosition());
+            Logger.message("wrist position %f", wrist.getPosition());*/
+            wrist.setPower(gamepad.right_stick_y);
+            Logger.message("wrist position %f", wrist.getPower());
 
-        } else if(gamepad.right_bumper) {
+        } else {
+            wrist.setPower(gamepad.right_stick_y);
+            handled = false;
+        }
+
+        if(gamepad.right_bumper) {
             if (iState == intakeStates.OFF || iState == intakeStates.REVERSE) {
                 intake.setPower(1);
                 iState = intakeStates.FORWARD;
@@ -405,8 +412,6 @@ public class Arm {
                 intake.setPower(0);
                 iState = intakeStates.OFF;
             }
-        } else {
-            handled = false;
         }
 
         return handled;
