@@ -28,7 +28,7 @@ public class Arm {
 
     public static final int    ARM_IN          = 0;
     public static final int    ARM_OUT_LOW     = 2500; //ToDo edit arm value
-    public static final int    ARM_OUT_HIGH    = 2750; //ToDo edit arm value
+    public static final int    ARM_OUT_HIGH    = 3870; //ToDo edit arm value
 
     public static final double WRIST_HOME         = 0;
     public static final double WRIST_DROP_LOW     = 0.44;
@@ -298,6 +298,12 @@ public class Arm {
 
         run();   // ToDo remove when subclass from thread
 
+        if (gamepad.back) {
+            leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
         if (gamepad.a) {
             // Move the arm to the lower drop position
             if (! aPressed) {
@@ -332,6 +338,8 @@ public class Arm {
             // Move the arm to the home position
             if (!yPressed) {
                 positionArmAsyn(ARM_POSITION.HOME);
+                intake.setPower(0);
+                iState = intakeStates.OFF;
                 yPressed = true;
             }
         } else {

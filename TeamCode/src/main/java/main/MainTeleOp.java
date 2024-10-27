@@ -110,6 +110,11 @@ public class MainTeleOp extends LinearOpMode {
                 while (gamepad1.right_bumper) sleep(100);
             }
 
+            if (gamepad1.back) {
+                robot.leftHook.setPosition(100);
+                robot.rightHook.setPosition(100);
+            }
+
             telemetry.update();
         }
     }

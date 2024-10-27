@@ -77,7 +77,7 @@ public class CalibrateArm extends LinearOpMode {
         telemetry.update();
         telemetry.setAutoClear(false);
 
-        home = 1; //ToDo fix stalling at 0 error
+        home = 3; //ToDo fix stalling at 0 error
         target = 3565;
 
         left = hardwareMap.get(DcMotor.class, "leftArm");
@@ -271,7 +271,7 @@ public class CalibrateArm extends LinearOpMode {
 
         //DcMotor.RunMode mode = motor.getMode();
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);   
         left.setTargetPosition(position);
         right.setTargetPosition(position);
         left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -279,7 +279,7 @@ public class CalibrateArm extends LinearOpMode {
         left.setPower(speed);
         right.setPower(speed);
         while (opModeIsActive()) {
-            if (!left.isBusy())
+            if (!left.isBusy() || gamepad1.left_bumper)
                 break;
         }
         left.setPower(0);

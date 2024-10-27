@@ -21,6 +21,9 @@ public class Robot {
     public Arm        arm = null;
     public Vision     vision = null;
 
+    public Servo leftHook;
+    public Servo rightHook;
+
     /* Declare OpMode members. */
     private final LinearOpMode opMode;
 
@@ -38,6 +41,8 @@ public class Robot {
         arm = new Arm(opMode);
 
         try {
+            leftHook = opMode.hardwareMap.get(Servo.class, Config.LEFT_HOOK);
+            rightHook = opMode.hardwareMap.get(Servo.class, Config.RIGHT_HOOK);
             /*dropper = opMode.hardwareMap.get(Servo.class, Config.PIXEL_DROPPER);
 
             droneAngle = opMode.hardwareMap.get(Servo.class, Config.DRONE_ANGLE);
