@@ -23,12 +23,12 @@ public class Arm {
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
-    public static final int    ELBOW_UP_LOW    = -1760; //ToDo edit elbow value
-    public static final int    ELBOW_UP_HIGH   = -2645; //ToDo edit elbow value
+    public static final int    ELBOW_UP_LOW    = -2245; //ToDo edit elbow value
+    public static final int    ELBOW_UP_HIGH   = -2990; //ToDo edit elbow value
 
     public static final int    ARM_IN          = 0;
-    public static final int    ARM_OUT_LOW     = 2500; //ToDo edit arm value
-    public static final int    ARM_OUT_HIGH    = 3870; //ToDo edit arm value
+    public static final int    ARM_OUT_LOW     = -3380; //ToDo edit arm value
+    public static final int    ARM_OUT_HIGH    = -4900; //ToDo edit arm value
 
     public static final double WRIST_HOME         = 0;
     public static final double WRIST_DROP_LOW     = 0.44;
@@ -69,12 +69,12 @@ public class Arm {
             wrist = opMode.hardwareMap.get(CRServo.class, Config.WRIST);
             intake = opMode.hardwareMap.get(CRServo.class, Config.INTAKE);
 
-            leftArm.setDirection(DcMotor.Direction.FORWARD);
+            leftArm.setDirection(DcMotor.Direction.REVERSE);
             leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            rightArm.setDirection(DcMotor.Direction.REVERSE);
+            rightArm.setDirection(DcMotor.Direction.FORWARD);
             rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -135,7 +135,7 @@ public class Arm {
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftArm.setPower(Math.abs(ARM_SPEED));
         rightArm.setPower(Math.abs(ARM_SPEED));
-        Logger.message("move arm from %d to %d", from, newPosition);
+        Logger.message("move arm from %d to %d (%d)", from, newPosition, leftArm.getCurrentPosition() );
 
         /*
         while (pixelArm.isBusy()) {
@@ -161,20 +161,20 @@ public class Arm {
 
 
     public void run () {
-        Logger.message("run");
+        //Logger.message("run");
 
         if (armActive) {
-            Logger.message("armActive");
+            //Logger.message("armActive");
             control();
         }
 
         if (state == ARM_STATE.NONE) {
-            Logger.message("none");
+            //Logger.message("none");
             return;
         }
 
         if (state == ARM_STATE.MOVE_LOW) {
-            Logger.message("low");
+            //Logger.message("low");
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_LOW));
@@ -184,7 +184,7 @@ public class Arm {
 
 
         } else if (state == ARM_STATE.MOVE_HIGH) {
-            Logger.message("high");
+            //Logger.message("high");
             if (stateTime.milliseconds() < 500)
                 return;
             armMove((ARM_OUT_HIGH));

@@ -83,8 +83,8 @@ public class CalibrateArm extends LinearOpMode {
         left = hardwareMap.get(DcMotor.class, "leftArm");
         right = hardwareMap.get(DcMotor.class, "rightArm");
 
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
 
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
