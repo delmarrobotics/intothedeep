@@ -4,6 +4,8 @@
 
 package common;
 
+import static java.lang.Math.cos;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -20,6 +22,15 @@ public class Arm {
 
     static final double ELBOW_SPEED = 1;
     static final double ARM_SPEED = 1;
+
+    private final double COUNTS_PER_MOTOR_REV = 28;              // Gobilda 5203 Yellow Jacket
+    private final double DRIVE_GEAR_REDUCTION = 26.9;              // Gearing
+    private final double WHEEL_DIAMETER_INCHES = (96 / 25.4);    // 96 mm wheels converted to inches
+
+    private final double encoderDegree = 42.22; //encoder cts per degree
+    private final double encoderInch = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
+
+    public double length = 0;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
@@ -161,6 +172,8 @@ public class Arm {
 
 
     public void run () {
+        length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(elbow.getCurrentPosition() / encoderDegree);
+        opMode.telemetry.addData("length", length);
         //Logger.message("run");
 
         if (armActive) {
@@ -352,7 +365,9 @@ public class Arm {
             if (gamepad.left_stick_y > 0)
                 elbow.setPower(ELBOW_SPEED);
             else if (gamepad.left_stick_y < 0)
-                elbow.setPower(-ELBOW_SPEED);
+                if (length < 27) {
+                    elbow.setPower(-ELBOW_SPEED);
+                }
             while (true) {
                 if (gamepad.left_stick_y == 0)
                     break;
@@ -365,8 +380,10 @@ public class Arm {
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (gamepad.left_stick_x > 0) {
-                leftArm.setPower(ARM_SPEED);
-                rightArm.setPower(ARM_SPEED);
+                if (length < 27) {
+                    leftArm.setPower(ARM_SPEED);
+                    rightArm.setPower(ARM_SPEED);
+                }
             } else if (gamepad.left_stick_x < 0) {
                 leftArm.setPower(-ARM_SPEED);
                 rightArm.setPower(-ARM_SPEED);
