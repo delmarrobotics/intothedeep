@@ -28,7 +28,7 @@ public class Arm {
     private final double WHEEL_DIAMETER_INCHES = (96 / 25.4);    // 96 mm wheels converted to inches
 
     private final double encoderDegree = 42.22; //encoder cts per degree
-    private final double encoderInch = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
+    private final double encoderInch = -1129 / 7.311;
 
     public double length = 0;
 
@@ -172,7 +172,7 @@ public class Arm {
 
 
     public void run () {
-        length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(elbow.getCurrentPosition() / encoderDegree);
+        length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
         opMode.telemetry.addData("length", length);
         //Logger.message("run");
 
@@ -365,12 +365,16 @@ public class Arm {
             if (gamepad.left_stick_y > 0)
                 elbow.setPower(ELBOW_SPEED);
             else if (gamepad.left_stick_y < 0)
-                if (length < 27) {
-                    elbow.setPower(-ELBOW_SPEED);
-                }
+                elbow.setPower(-ELBOW_SPEED);
             while (true) {
-                if (gamepad.left_stick_y == 0)
+                length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                if (gamepad.left_stick_y == 0 || length >= 27) {
+                    while (length >= 27) {
+                        elbow.setPower(-ELBOW_SPEED);
+                        length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                    }
                     break;
+                }
             }
             elbow.setPower(0);
             Logger.message( "elbow position %7d", elbow.getCurrentPosition());
@@ -380,17 +384,22 @@ public class Arm {
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (gamepad.left_stick_x > 0) {
-                if (length < 27) {
-                    leftArm.setPower(ARM_SPEED);
-                    rightArm.setPower(ARM_SPEED);
-                }
+                leftArm.setPower(ARM_SPEED);
+                rightArm.setPower(ARM_SPEED);
             } else if (gamepad.left_stick_x < 0) {
                 leftArm.setPower(-ARM_SPEED);
                 rightArm.setPower(-ARM_SPEED);
             }
             while (true) {
-                if (gamepad.left_stick_x == 0)
+                length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                if (gamepad.left_stick_x == 0 || length >= 27){
+                        while (length>=27) {
+                            leftArm.setPower(ARM_SPEED);
+                            rightArm.setPower(ARM_SPEED);
+                            length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                        }
                     break;
+                }
             }
             int position = leftArm.getCurrentPosition();
             leftArm.setTargetPosition(position);
