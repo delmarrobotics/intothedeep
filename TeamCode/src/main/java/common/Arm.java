@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 public class Arm {
 
     public enum ARM_POSITION { HOME, LOW, HIGH }
-    private enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
+    public enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
 
     static final double ELBOW_SPEED = 1;
     static final double ARM_SPEED = 1;
@@ -52,7 +52,7 @@ public class Arm {
     private CRServo   wrist = null;
     private CRServo intake = null;
 
-    private ARM_STATE state  = ARM_STATE.NONE;
+    public ARM_STATE state  = ARM_STATE.NONE;
     private final ElapsedTime stateTime = new ElapsedTime();
 
     private boolean aPressed = false;
@@ -60,8 +60,8 @@ public class Arm {
     private boolean xPressed = false;
     private boolean yPressed = false;
 
-    private enum intakeStates { OFF, FORWARD, REVERSE }
-    private intakeStates iState = intakeStates.OFF;
+    public enum intakeStates { OFF, FORWARD, REVERSE }
+    public intakeStates iState = intakeStates.OFF;
 
     private boolean armActive = false;
 
@@ -165,6 +165,17 @@ public class Arm {
     /*public void wristMove(double position) {
         wrist.setPosition(position);
     }*/
+
+    public void intakeSet(intakeStates setState) {
+        if (setState == intakeStates.FORWARD) {
+            intake.setPower(1);
+        } else if (setState == intakeStates.REVERSE) {
+            intake.setPower(-1);
+        } else {
+            intake.setPower(0);
+        }
+        iState = setState;
+    }
 
     public void enablelArm (boolean enable) {
         armActive = enable;
@@ -368,8 +379,8 @@ public class Arm {
                 elbow.setPower(-ELBOW_SPEED);
             while (true) {
                 length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
-                if (gamepad.left_stick_y == 0 || length >= 27) {
-                    while (length >= 27) {
+                if (gamepad.left_stick_y == 0 || length >= 30) {
+                    while (length >= 30) {
                         elbow.setPower(-ELBOW_SPEED);
                         length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
                     }
@@ -392,8 +403,8 @@ public class Arm {
             }
             while (true) {
                 length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
-                if (gamepad.left_stick_x == 0 || length >= 27){
-                        while (length>=27) {
+                if (gamepad.left_stick_x == 0 || length >= 30){
+                        while (length>=30) {
                             leftArm.setPower(ARM_SPEED);
                             rightArm.setPower(ARM_SPEED);
                             length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));

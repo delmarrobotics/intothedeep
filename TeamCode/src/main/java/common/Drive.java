@@ -32,7 +32,7 @@ public class Drive extends Thread {
 
     public static double DRIVE_FACTOR  = 0.635;    // 0.97;
     public static double STRAFE_FACTOR = 1.2;      // 1.11;
-    public static double TURN_FACTOR   = 11.3;     // 13.38;
+    public static double TURN_FACTOR   = 13.38;     // 13.38;
 
     // Drive train
     private final double COUNTS_PER_MOTOR_REV = 28;              // Gobilda 5203 Yellow Jacket

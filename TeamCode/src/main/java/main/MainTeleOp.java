@@ -65,12 +65,12 @@ public class MainTeleOp extends LinearOpMode {
             robot.moveRobot(drive, strafe, yaw, speed);
             */
 
-            if (gamepad2.back) {
+            /*if (gamepad2.back) {
                 if (runtime.seconds() > 90 && mode == GamepadMode.ONE)
                     Logger.message("Changed gamepad at %f", runtime.seconds());
                 changeGamepadMode();
                 while (gamepad2.back) sleep(100);
-            }
+            }*/
 
             if (mode == GamepadMode.TWO) {
                 /*if (robot.hangingArm.control()) {
