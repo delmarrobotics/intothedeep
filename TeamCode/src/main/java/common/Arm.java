@@ -46,10 +46,11 @@ public class Arm {
     public static final double WRIST_DROP_HIGH    = 0.445;
     public static final double WRIST_SPECIMEN     = 0;
 
-    private DcMotor elbow = null;
+    private DcMotor leftElbow = null;
+    private DcMotor rightElbow = null;
     private DcMotor leftArm   = null;
     private DcMotor rightArm = null;
-    private CRServo   wrist = null;
+    private CRServo wrist = null;
     private CRServo intake = null;
 
     public ARM_STATE state  = ARM_STATE.NONE;
@@ -76,7 +77,8 @@ public class Arm {
         try {
             leftArm = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ARM);
             rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
-            elbow = opMode.hardwareMap.get(DcMotorEx.class, Config.ELBOW);
+            leftElbow = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ELBOW);
+            rightElbow = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ELBOW);
             wrist = opMode.hardwareMap.get(CRServo.class, Config.WRIST);
             intake = opMode.hardwareMap.get(CRServo.class, Config.INTAKE);
 
@@ -90,10 +92,15 @@ public class Arm {
             rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            elbow.setDirection(DcMotor.Direction.REVERSE);
-            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftElbow.setDirection(DcMotor.Direction.REVERSE);
+            leftElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftElbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            rightElbow.setDirection(DcMotor.Direction.REVERSE);
+            rightElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightElbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             intake.setDirection(DcMotorSimple.Direction.FORWARD);
             intake.setPower(0);
@@ -114,11 +121,15 @@ public class Arm {
     public void elbowMove(int newPosition) {
         opMode.telemetry.addData("elbow", "elbowMove %d", newPosition);
 
-        int from = elbow.getCurrentPosition();
-        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elbow.setTargetPosition(newPosition);
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        elbow.setPower(Math.abs(ELBOW_SPEED));
+        int from = leftElbow.getCurrentPosition();
+        leftElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftElbow.setTargetPosition(newPosition);
+        rightElbow.setTargetPosition(newPosition);
+        leftElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElbow.setPower(Math.abs(ELBOW_SPEED));
+        rightElbow.setPower(Math.abs(ELBOW_SPEED));
 
         /*
         while (elbow.isBusy()) {
@@ -183,7 +194,7 @@ public class Arm {
 
 
     public void run () {
-        length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+        length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
         opMode.telemetry.addData("length", length);
         //Logger.message("run");
 
@@ -307,7 +318,7 @@ public class Arm {
                         "  x - position arm at high position\n" +
                         "  y - position arm at pickup position\n" +
                         "  right triggers - drop pixels\n" +
-                        elbow.getCurrentPosition() + "\n"
+                        leftElbow.getCurrentPosition() + "\n"
                 //"  left stick - move elbow (u/d)  arm (l/r)\n" +
                 //"  right stick - manual rotate the hands\n"
         );
@@ -325,7 +336,8 @@ public class Arm {
         if (gamepad.back) {
             leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
         if (gamepad.a) {
@@ -372,23 +384,29 @@ public class Arm {
 
         if (gamepad.left_stick_y != 0) {
             // manually move the elbow
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (gamepad.left_stick_y > 0)
-                elbow.setPower(ELBOW_SPEED);
-            else if (gamepad.left_stick_y < 0)
-                elbow.setPower(-ELBOW_SPEED);
+            leftElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (gamepad.left_stick_y > 0) {
+                leftElbow.setPower(ELBOW_SPEED);
+                rightElbow.setPower(ELBOW_SPEED);
+            } else if (gamepad.left_stick_y < 0) {
+                leftElbow.setPower(-ELBOW_SPEED);
+                rightElbow.setPower(-ELBOW_SPEED);
+            }
             while (true) {
-                length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                length = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
                 if (gamepad.left_stick_y == 0 || length >= 30) {
                     while (length >= 30) {
-                        elbow.setPower(-ELBOW_SPEED);
-                        length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                        leftElbow.setPower(-ELBOW_SPEED);
+                        rightElbow.setPower(-ELBOW_SPEED);
+                        length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
                     }
                     break;
                 }
             }
-            elbow.setPower(0);
-            Logger.message( "elbow position %7d", elbow.getCurrentPosition());
+            leftElbow.setPower(0);
+            rightElbow.setPower(0);
+            Logger.message( "elbow position %7d", leftElbow.getCurrentPosition());
 
         } else if (gamepad.left_stick_x != 0) {
             // manually extend or retract the pixel arm
@@ -402,12 +420,12 @@ public class Arm {
                 rightArm.setPower(-ARM_SPEED);
             }
             while (true) {
-                length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
                 if (gamepad.left_stick_x == 0 || length >= 30){
                         while (length>=30) {
                             leftArm.setPower(ARM_SPEED);
                             rightArm.setPower(ARM_SPEED);
-                            length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(elbow.getCurrentPosition() / encoderDegree));
+                            length = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
                         }
                     break;
                 }

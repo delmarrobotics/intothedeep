@@ -17,7 +17,8 @@ public class Config {
 
     public static final String LEFT_ARM         = "leftArm";
     public static final String RIGHT_ARM        = "rightArm";
-    public static final String ELBOW            = "elbow";
+    public static final String LEFT_ELBOW       = "leftElbow";
+    public static final String RIGHT_ELBOW      = "rightElbow";
     public static final String WRIST            = "wrist";
     public static final String INTAKE           = "intake";
     public static final String LEFT_HOOK        = "leftHook";
