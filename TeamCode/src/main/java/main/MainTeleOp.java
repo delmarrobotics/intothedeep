@@ -111,7 +111,7 @@ public class MainTeleOp extends LinearOpMode {
             }
 
             if (gamepad1.back) {
-                robot.leftHook.setPosition(100);
+                robot.leftHook.setPosition(-100);
                 robot.rightHook.setPosition(100);
             }
 

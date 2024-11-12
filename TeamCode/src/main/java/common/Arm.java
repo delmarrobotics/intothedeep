@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Arm {
 
-    public enum ARM_POSITION { HOME, LOW, HIGH }
-    public enum ARM_STATE { NONE, MOVE_HOME, MOVE_LOW, MOVE_HIGH, DROP_SAMPLE, ARM_UP }
+    public enum ARM_POSITION { HOME, HIGH, SAMPLE, RUNG }
+    public enum ARM_STATE { NONE, MOVE_HOME, MOVE_HIGH, MOVE_SAMPLE, MOVE_RUNG, ARM_UP, DROP_SAMPLE }
 
     static final double ELBOW_SPEED = 1;
     static final double ARM_SPEED = 1;
@@ -34,15 +34,17 @@ public class Arm {
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
-    public static final int    ELBOW_UP_LOW    = -2245; //ToDo edit elbow value
+    public static final int    ELBOW_SAMPLE    = -630; //ToDo edit elbow value
+    public static final int    ELBOW_RUNG      = -2961;
     public static final int    ELBOW_UP_HIGH   = -2990; //ToDo edit elbow value
 
     public static final int    ARM_IN          = 0;
-    public static final int    ARM_OUT_LOW     = -3380; //ToDo edit arm value
+    public static final int    ARM_SAMPLE     = -1434; //ToDo edit arm value
+    public static final int    ARM_RUNG       = -1621;
     public static final int    ARM_OUT_HIGH    = -4900; //ToDo edit arm value
 
     public static final double WRIST_HOME         = 0;
-    public static final double WRIST_DROP_LOW     = 0.44;
+    public static final double WRIST_RUNG         = 0;
     public static final double WRIST_DROP_HIGH    = 0.445;
     public static final double WRIST_SPECIMEN     = 0;
 
@@ -208,11 +210,11 @@ public class Arm {
             return;
         }
 
-        if (state == ARM_STATE.MOVE_LOW) {
+        if (state == ARM_STATE.MOVE_SAMPLE) {
             //Logger.message("low");
             if (stateTime.milliseconds() < 500)
                 return;
-            armMove((ARM_OUT_LOW));
+            armMove((ARM_SAMPLE));
             //wristMove(WRIST_DROP_LOW);
             state = ARM_STATE.NONE;
             Logger.message("pixel arm and wrist to low position");
@@ -259,29 +261,37 @@ public class Arm {
     public void positionArmAsyn(ARM_POSITION position) {
 
         stateTime.reset();
-        if (position == ARM_POSITION.LOW) {
-            elbowMove(ELBOW_UP_LOW);
-            Logger.message("pixel elbow to low position");
-            state = ARM_STATE.MOVE_LOW;
+        if (position == ARM_POSITION.SAMPLE) {
+            elbowMove(ELBOW_SAMPLE);
+            Logger.message("elbow to sample position");
+            state = ARM_STATE.MOVE_SAMPLE;
+        } else if (position == ARM_POSITION.RUNG) {
+            elbowMove(ELBOW_RUNG);
+            state = ARM_STATE.MOVE_RUNG;
+            Logger.message("elbow to rung position");
         } else if (position == ARM_POSITION.HIGH) {
             elbowMove(ELBOW_UP_HIGH);
             state = ARM_STATE.MOVE_HIGH;
-            Logger.message("pixel elbow to high position");
+            Logger.message("elbow to high position");
         } else if (position == ARM_POSITION.HOME) {
             //wristMove(WRIST_HOME);
             armMove(ARM_IN);
             state = ARM_STATE.MOVE_HOME;
-            Logger.message("pixel wrist and arm to home position");
+            Logger.message("wrist and arm to home position");
         }
     }
 
     public void positionArm(ARM_POSITION position) {
 
-        if (position == ARM_POSITION.LOW) {
-            elbowMove(ELBOW_UP_LOW);
+        if (position == ARM_POSITION.SAMPLE) {
+            elbowMove(ELBOW_SAMPLE);
             opMode.sleep(500);
-            armMove((ARM_OUT_LOW));
+            armMove((ARM_SAMPLE));
             //wristMove(WRIST_DROP_LOW);
+        } else if (position == ARM_POSITION.RUNG) {
+            elbowMove(ELBOW_RUNG);
+            opMode.sleep(500);
+            elbowMove(ARM_RUNG);
         } else if (position == ARM_POSITION.HIGH) {
             elbowMove(ELBOW_UP_HIGH);
             armMove((ARM_OUT_HIGH));
@@ -343,22 +353,22 @@ public class Arm {
         if (gamepad.a) {
             // Move the arm to the lower drop position
             if (! aPressed) {
-                positionArmAsyn(ARM_POSITION.LOW);
+                positionArmAsyn(ARM_POSITION.RUNG);
                 aPressed = true;
             }
         } else {
             aPressed = false;
         }
 
-        /*if (gamepad.x) {
+        if (gamepad.x) {
             // Move the arm to the middle drop position
             if (!xPressed) {
-                positionArmAsyn(ARM_POSITION.MID);
+                positionArmAsyn(ARM_POSITION.SAMPLE);
                 xPressed = true;
             }
         } else {
             xPressed = false;
-        }*/
+        }
 
         if (gamepad.b) {
             // Move the arm to the higher drop position
