@@ -27,16 +27,16 @@ public class Arm {
     private final double DRIVE_GEAR_REDUCTION = 26.9;              // Gearing
     private final double WHEEL_DIAMETER_INCHES = (96 / 25.4);    // 96 mm wheels converted to inches
 
-    private final double encoderDegree = 42.22; //encoder cts per degree
+    private final double encoderDegree = 31.11; //encoder cts per degree 42.22
     private final double encoderInch = -1129 / 7.311;
 
     public double length = 0;
 
     // Position for all the pixel arm servos and motor encoders
     public static final int    ELBOW_DOWN      = 0;
-    public static final int    ELBOW_SAMPLE    = -630; //ToDo edit elbow value
-    public static final int    ELBOW_RUNG      = -2961;
-    public static final int    ELBOW_UP_HIGH   = -2990; //ToDo edit elbow value
+    public static final int    ELBOW_SAMPLE    = -464; //ToDo edit elbow value
+    public static final int    ELBOW_RUNG      = -2182;
+    public static final int    ELBOW_UP_HIGH   = -2203; //ToDo edit elbow value
 
     public static final int    ARM_IN          = 0;
     public static final int    ARM_SAMPLE     = -1434; //ToDo edit arm value

@@ -66,9 +66,17 @@ public class CalibrateArm extends LinearOpMode {
     private final double speed = 1;
     private DcMotor left = null;
     private DcMotor right = null;
+    private DcMotor leftE = null;
+    private DcMotor rightE = null;
+
 
     private int home;
     private int target;
+
+    private int homeE;
+    private int targetE;
+
+    private boolean mode;
 
     @Override
     public void runOpMode() {
@@ -80,26 +88,51 @@ public class CalibrateArm extends LinearOpMode {
         home = 3; //ToDo fix stalling at 0 error
         target = 3565;
 
+        homeE = 3;
+        target = 3;
+
+        mode = true;
+
         left = hardwareMap.get(DcMotor.class, "leftArm");
         right = hardwareMap.get(DcMotor.class, "rightArm");
+
+        leftE = hardwareMap.get(DcMotor.class, "leftElbow");
+        rightE = hardwareMap.get(DcMotor.class, "rightElbow");
 
         left.setDirection(DcMotorSimple.Direction.REVERSE);
         right.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.REVERSE);
+
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        leftE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         waitForStart();
 
-        Telemetry.Item directionMsg = telemetry.addData("Motor direction", 0);
-        Telemetry.Item positionMsg = telemetry.addData("Motor position", 0);
-        Telemetry.Item homeMsg = telemetry.addData("Home position", 0);
-        Telemetry.Item targetMsg = telemetry.addData("Target position", 0);
+        Telemetry.Item directionMsg = telemetry.addData("Arm Motor direction", 0);
+        Telemetry.Item positionMsg = telemetry.addData("Arm Motor position", 0);
+        Telemetry.Item homeMsg = telemetry.addData("Arm Home position", 0);
+        Telemetry.Item targetMsg = telemetry.addData("Arm Target position", 0);
+
+        Telemetry.Item directionMsgE = telemetry.addData("Arm Motor direction", 0);
+        Telemetry.Item positionMsgE = telemetry.addData("Arm Motor position", 0);
+        Telemetry.Item homeMsgE = telemetry.addData("Arm Home position", 0);
+        Telemetry.Item targetMsgE = telemetry.addData("Arm Target position", 0);
 
         setDisplayDirection(directionMsg);
         setDisplayPosition(positionMsg);
         setDisplayHome(homeMsg);
         setDisplayTarget(targetMsg);
+
+        setDisplayDirectionE(directionMsgE);
+        setDisplayPositionE(positionMsgE);
+        setDisplayHomeE(homeMsgE);
+        setDisplayTargetE(targetMsgE);
+
 
         telemetry.addData("\nMotor Calibration Controls", "\n" +
                 "  left trigger - run motor backwards\n" +
@@ -119,84 +152,155 @@ public class CalibrateArm extends LinearOpMode {
 
             if (gamepad1.a) {
                 // set target position to current position
-                target = left.getCurrentPosition();
+                if (mode) {
+                    target = left.getCurrentPosition();
+                } else {
+                    target = leftE.getCurrentPosition();
+                }
 
             } else if (gamepad1.y) {
                 // set the home position to the current position
-                home = left.getCurrentPosition();
+                if (mode) {
+                    home = left.getCurrentPosition();
+                } else {
+                    home = leftE.getCurrentPosition();
+                }
 
             } else if (gamepad1.x) {
                 // run to home position
-                runToPosition(home);
+                if (mode) {
+                    runToPosition(home);
+                } else {
+                    runToPosition(homeE);
+                }
 
             } else if (gamepad1.b) {
                 // run motor to an target position
-                runToPosition(target);
+                if (mode) {
+                    runToPosition(target);
+                } else {
+                    runToPosition(targetE);
+                }
 
             } else if (gamepad1.left_trigger > 0) {
                 // manually run the motor backwards
-                left.setPower(-speed);
-                right.setPower(-speed);
-                while (gamepad1.left_trigger > 0) {
-                    setDisplayPosition(positionMsg);
-                    telemetry.update();
-                    sleep(100);
+                if (mode) {
+                    left.setPower(-speed);
+                    right.setPower(-speed);
+                    while (gamepad1.left_trigger > 0) {
+                        setDisplayPosition(positionMsg);
+                        telemetry.update();
+                        sleep(100);
+                    }
+                    left.setPower(0);
+                    right.setPower(0);
+                } else {
+                    leftE.setPower(-speed);
+                    rightE.setPower(-speed);
+                    while (gamepad1.left_trigger > 0) {
+                        setDisplayPositionE(positionMsgE);
+                        telemetry.update();
+                        sleep(100);
+                    }
+                    leftE.setPower(0);
+                    rightE.setPower(0);
                 }
-                left.setPower(0);
-                right.setPower(0);
 
             } else if (gamepad1.right_trigger > 0) {
                 // manually run the motor forward
-                left.setPower(speed);
-                right.setPower(speed);
-                while (gamepad1.right_trigger > 0) {
-                    setDisplayPosition(positionMsg);
-                    telemetry.update();
-                    sleep(100);
+                if (mode) {
+                    left.setPower(speed);
+                    right.setPower(speed);
+                    while (gamepad1.left_trigger > 0) {
+                        setDisplayPosition(positionMsg);
+                        telemetry.update();
+                        sleep(100);
+                    }
+                    left.setPower(0);
+                    right.setPower(0);
+                } else {
+                    leftE.setPower(speed);
+                    rightE.setPower(speed);
+                    while (gamepad1.left_trigger > 0) {
+                        setDisplayPositionE(positionMsgE);
+                        telemetry.update();
+                        sleep(100);
+                    }
+                    leftE.setPower(0);
+                    rightE.setPower(0);
                 }
-                left.setPower(0);
-                right.setPower(0);
 
             } else if (gamepad1.left_stick_y > 0) {
                 // increase target position
-                runtime.reset();
-                while (gamepad1.left_stick_y > 0) {
-                    target -= increment(incrementSlow, incrementMedium, incrementFast);
-                    setDisplayTarget(targetMsg);
-                    telemetry.update();
+                if (mode) {
+                    runtime.reset();
+                    while (gamepad1.left_stick_y > 0) {
+                        target -= increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayTarget(targetMsg);
+                        telemetry.update();
+                    }
+                } else {
+                    runtime.reset();
+                    while (gamepad1.left_stick_y > 0) {
+                        targetE -= increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayTargetE(targetMsgE);
+                        telemetry.update();
+                    }
                 }
 
             } else if (gamepad1.left_stick_y < 0) {
                 // decrease the target position
-                runtime.reset();
-                while (gamepad1.left_stick_y < 0) {
-                    target += increment(incrementSlow, incrementMedium, incrementFast);
-                    setDisplayTarget(targetMsg);
-                    telemetry.update();
+                if (mode) {
+                    runtime.reset();
+                    while (gamepad1.left_stick_y > 0) {
+                        target += increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayTarget(targetMsg);
+                        telemetry.update();
+                    }
+                } else {
+                    runtime.reset();
+                    while (gamepad1.left_stick_y > 0) {
+                        targetE += increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayTargetE(targetMsgE);
+                        telemetry.update();
+                    }
                 }
-                left.setPower(0);
-                right.setPower(0);
 
             } else if (gamepad1.right_stick_y > 0) {
                 // increase home position
-                runtime.reset();
-                while (gamepad1.right_stick_y > 0) {
-                    home -= increment(incrementSlow, incrementMedium, incrementFast);
-                    setDisplayHome(homeMsg);
-                    telemetry.update();
+                if (mode) {
+                    runtime.reset();
+                    while (gamepad1.right_stick_y > 0) {
+                        home -= increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayHome(homeMsg);
+                        telemetry.update();
+                    }
+                } else {
+                    runtime.reset();
+                    while (gamepad1.right_stick_y > 0) {
+                        homeE -= increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayHomeE(homeMsgE);
+                        telemetry.update();
+                    }
                 }
 
             } else if (gamepad1.right_stick_y < 0) {
                 // decrease the home position
-                runtime.reset();
-                while (gamepad1.right_stick_y < 0) {
-                    home += increment(incrementSlow, incrementMedium, incrementFast);
-                    setDisplayHome(homeMsg);
-                    telemetry.update();
+                if (mode) {
+                    runtime.reset();
+                    while (gamepad1.right_stick_y > 0) {
+                        home += increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayHome(homeMsg);
+                        telemetry.update();
+                    }
+                } else {
+                    runtime.reset();
+                    while (gamepad1.right_stick_y > 0) {
+                        homeE += increment(incrementSlow, incrementMedium, incrementFast);
+                        setDisplayHomeE(homeMsgE);
+                        telemetry.update();
+                    }
                 }
-                left.setPower(0);
-                right.setPower(0);
-
 
             } else if (gamepad1.dpad_up) {
                 // change the direction of the motor
@@ -216,7 +320,13 @@ public class CalibrateArm extends LinearOpMode {
                 // exit opmode without saving calibration data
                 requestOpModeStop();
                 break;
+            } else if (gamepad1.start) {
+                mode = false;
             }
+            setDisplayDirectionE(directionMsgE);
+            setDisplayPositionE(positionMsgE);
+            setDisplayHomeE(homeMsgE);
+            setDisplayTargetE(targetMsgE);
 
             setDisplayPosition(positionMsg);
             setDisplayHome(homeMsg);
@@ -239,6 +349,22 @@ public class CalibrateArm extends LinearOpMode {
 
     private void setDisplayDirection(Telemetry.Item item) {
         item.setValue("%s", left.getDirection());
+    }
+
+    private void setDisplayPositionE(Telemetry.Item item) {
+        item.setValue("%d", leftE.getCurrentPosition());
+    }
+
+    private void setDisplayHomeE(Telemetry.Item item) {
+        item.setValue("%d", homeE);
+    }
+
+    private void setDisplayTargetE(Telemetry.Item item) {
+        item.setValue("%d", targetE);
+    }
+
+    private void setDisplayDirectionE(Telemetry.Item item) {
+        item.setValue("%s", leftE.getDirection());
     }
 
     /**
@@ -268,21 +394,38 @@ public class CalibrateArm extends LinearOpMode {
     }
 
     private void runToPosition(int position) {
-
-        //DcMotor.RunMode mode = motor.getMode();
-        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);   
-        left.setTargetPosition(position);
-        right.setTargetPosition(position);
-        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left.setPower(speed);
-        right.setPower(speed);
-        while (opModeIsActive()) {
-            if (!left.isBusy() || gamepad1.left_bumper)
-                break;
+        if (mode) {
+            //DcMotor.RunMode mode = motor.getMode();
+            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            left.setTargetPosition(position);
+            right.setTargetPosition(position);
+            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            left.setPower(speed);
+            right.setPower(speed);
+            while (opModeIsActive()) {
+                if (!left.isBusy() || gamepad1.left_bumper)
+                    break;
+            }
+            left.setPower(0);
+            right.setPower(0);
+        } else {
+            //DcMotor.RunMode mode = motor.getMode();
+            leftE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightE.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftE.setTargetPosition(position);
+            rightE.setTargetPosition(position);
+            leftE.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightE.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftE.setPower(speed);
+            rightE.setPower(speed);
+            while (opModeIsActive()) {
+                if (!leftE.isBusy() || gamepad1.left_bumper)
+                    break;
+            }
+            leftE.setPower(0);
+            rightE.setPower(0);
         }
-        left.setPower(0);
-        right.setPower(0);
     }
 }
