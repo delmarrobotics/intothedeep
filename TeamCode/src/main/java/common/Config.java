@@ -22,7 +22,8 @@ public class Config {
     public static final String WRIST            = "wrist";
     public static final String INTAKE           = "intake";
     public static final String LEFT_HOOK        = "leftHook";
-    public static final String RIGHT_HOOK        = "rightHook";
+    public static final String RIGHT_HOOK       = "rightHook";
+    public static final String SPECIMEN         = "specimen";
 
     //public static final String CAMERA           = "Webcam 1";
 }

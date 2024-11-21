@@ -66,6 +66,8 @@ public class Arm {
     public enum intakeStates { OFF, FORWARD, REVERSE }
     public intakeStates iState = intakeStates.OFF;
 
+    public intakeStates wState = intakeStates.OFF;
+
     private boolean armActive = false;
 
     public LinearOpMode opMode;
@@ -175,9 +177,16 @@ public class Arm {
         */
     }
 
-    /*public void wristMove(double position) {
-        wrist.setPosition(position);
-    }*/
+    public void wristMove(intakeStates setState) {
+        if (setState == intakeStates.FORWARD) {
+            wrist.setPower(1);
+        } else if (setState == intakeStates.REVERSE) {
+            wrist.setPower(-1);
+        } else {
+            wrist.setPower(0);
+        }
+        wState = setState;
+    }
 
     public void intakeSet(intakeStates setState) {
         if (setState == intakeStates.FORWARD) {

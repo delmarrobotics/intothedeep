@@ -92,6 +92,7 @@ public class MainTeleOp extends LinearOpMode {
                 if (robot.arm.control())
                     continue;*/
                 robot.arm.control();
+                robot.specimen.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
             }
 
             if (gamepad1.a) {

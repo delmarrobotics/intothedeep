@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;*/
 import common.Arm;
 import common.Robot;
 
-@Autonomous(name="Sample Bucket Auto", group="Main")
-public class SampleBucketAuto extends LinearOpMode {
+@Autonomous(name="Sample Bucket Turn Auto", group="Main")
+public class SampleBucketTurnAuto extends LinearOpMode {
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -54,42 +54,46 @@ public class SampleBucketAuto extends LinearOpMode {
         sleep(500);
         robot.arm.armMove(robot.arm.ARM_OUT_HIGH);
         sleep(2500);
-        robot.forward(27);
+        robot.forward(26);
         //sleep(750);
         robot.arm.intakeSet(Arm.intakeStates.REVERSE);
         sleep(1500);
         robot.arm.intakeSet(Arm.intakeStates.OFF);
-        robot.back(27);
-        robot.arm.elbowMove(0);
+        robot.back(3);
         robot.arm.armMove(0);
+        sleep(1000);
+        robot.arm.elbowMove(0);
         sleep(1500);
-        robot.turn(-51);
-        robot.back(4);
-        robot.strafeRight(13);
+        robot.forward(3);
+        robot.turn(-162);
         robot.arm.wristMove(Arm.intakeStates.FORWARD);
         robot.arm.intakeSet(Arm.intakeStates.FORWARD);
-        robot.arm.armMove(-1244);
-        robot.arm.elbowMove(200);
-        sleep(200);
+        sleep(500);
         robot.arm.wristMove(Arm.intakeStates.OFF);
-        sleep(1800);
-        robot.arm.elbowMove(0);
+        robot.forward(7);
+        robot.arm.armMove(-2700);
+        robot.arm.elbowMove(1500);
+        sleep(2000);
         robot.arm.armMove(0);
-        robot.strafeLeft(13);
-        robot.turn(51);
+        robot.arm.elbowMove(0);
+        robot.back(7);
+        sleep(1000);
+        robot.turn(162);
+        robot.back(7);
         robot.arm.wristMove(Arm.intakeStates.REVERSE);
         robot.arm.elbowMove(-2376);
-        sleep(200);
+        sleep(400);
         robot.arm.wristMove(Arm.intakeStates.OFF);
         robot.arm.armMove(robot.arm.ARM_OUT_HIGH);
         sleep(2000);
-        robot.forward(27);
+        robot.forward(7);
         robot.arm.intakeSet(Arm.intakeStates.REVERSE);
         sleep(2000);
         robot.arm.intakeSet(Arm.intakeStates.OFF);
-        robot.back(27);
-        robot.arm.elbowMove(0);
+        robot.back(33);
         robot.arm.armMove(0);
+        sleep(1000);
+        robot.arm.elbowMove(0);
         robot.turn(-51);
         robot.back(82);
         robot.strafeLeft(30);
