@@ -69,12 +69,12 @@ public class SampleBucketTurnAuto extends LinearOpMode {
         robot.arm.wristMove(Arm.intakeStates.FORWARD);
         robot.arm.intakeSet(Arm.intakeStates.FORWARD);
         sleep(500);
-        robot.forward(7);
+        robot.forward(8);
         robot.arm.wristMove(Arm.intakeStates.OFF);
-        robot.arm.armMove(-2700);
-        robot.arm.elbowMove(72);
-        sleep(2000);
-        robot.arm.elbowMove(0);
+        robot.arm.armMove(-3000);
+        robot.arm.elbowMove(250);
+        sleep(1500);
+        robot.arm.elbowMove(-150);
         robot.arm.armMove(0);
         robot.back(7);
         sleep(1000);
@@ -85,7 +85,7 @@ public class SampleBucketTurnAuto extends LinearOpMode {
         sleep(400);
         robot.arm.wristMove(Arm.intakeStates.OFF);
         robot.arm.armMove(-4600);
-        sleep(2000);
+        sleep(1500);
         robot.arm.intakeSet(Arm.intakeStates.REVERSE);
         robot.forward(7);
         sleep(2000);
