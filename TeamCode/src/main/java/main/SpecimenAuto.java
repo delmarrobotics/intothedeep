@@ -50,7 +50,8 @@ public class SpecimenAuto extends LinearOpMode {
         robot.arm.wristMove(Arm.intakeStates.REVERSE);
         sleep(3000);
         robot.arm.elbowMove(-1900);
-        sleep(2000);
+        sleep(1000);
         robot.arm.wristMove(Arm.intakeStates.OFF);
+        robot.arm.elbowMove(robot.arm.ELBOW_RUNG);
     }
 }
