@@ -202,9 +202,9 @@ public class Arm {
 
     public void setSpecimen(boolean enable) {
         if (enable) {
-
+            specimen.setPosition(0);
         } else {
-
+            specimen.setPosition(1);
         }
     }
 

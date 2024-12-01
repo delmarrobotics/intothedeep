@@ -728,24 +728,35 @@ public class Drive extends Thread {
     }
 
     public void forward (double distance) {
-        moveDistance(DIRECTION.FORWARD,1, distance, 0);
+        moveDistance(DIRECTION.FORWARD,0.5, distance, 0);
+    }
+
+    public void forwardSlow (double distance) {
+        moveDistance(DIRECTION.FORWARD,0.2, distance, 0);
+    }
+
+    public void forwardFast (double distance) {
+        moveDistance(DIRECTION.FORWARD,0.8, distance, 0);
     }
 
     public void back (double distance) {
+        moveDistance(DIRECTION.BACK,0.5, distance, 0);
+    }
 
-        moveDistance(DIRECTION.BACK,1, distance, 0);
+    public void backFast (double distance) {
+        moveDistance(DIRECTION.BACK,0.8, distance, 0);
     }
 
     public void strafeLeft (double distance) {
         //distance = Math.sqrt(Math.pow(distance,2 ) + Math.pow(distance,2));
         distance *= STRAFE_FACTOR;
-        moveDistance(DIRECTION.LEFT,1, distance, 0);
+        moveDistance(DIRECTION.LEFT,0.7, distance, 0);
     }
 
     public void strafeRight (double distance) {
         //distance = Math.sqrt(Math.pow(distance,2 ) + Math.pow(distance,2));
         distance *= STRAFE_FACTOR;
-        moveDistance(DIRECTION.RIGHT,1, distance, 0);
+        moveDistance(DIRECTION.RIGHT,0.7, distance, 0);
     }
 
     public void turn(double degrees) {
