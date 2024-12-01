@@ -44,14 +44,16 @@ public class SpecimenAuto extends LinearOpMode {
         //elbow -3224
 
         //robot.vision.enableCameraStream(false);
+        robot.arm.setSpecimen(true);
         robot.arm.elbowMove(robot.arm.ELBOW_RUNG);
         robot.arm.armMove(robot.arm.ARM_RUNG);
-        robot.forward(34);
+        robot.forward(31);
         robot.arm.wristMove(Arm.intakeStates.REVERSE);
         sleep(3000);
         robot.arm.elbowMove(-1900);
-        sleep(1000);
+        sleep(2000);
         robot.arm.wristMove(Arm.intakeStates.OFF);
-        robot.arm.elbowMove(robot.arm.ELBOW_RUNG);
+        robot.arm.setSpecimen(false);
+        robot.back(10);
     }
 }

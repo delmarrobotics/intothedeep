@@ -44,7 +44,6 @@ public class Robot {
         try {
             leftHook = opMode.hardwareMap.get(Servo.class, Config.LEFT_HOOK);
             rightHook = opMode.hardwareMap.get(Servo.class, Config.RIGHT_HOOK);
-            specimen = opMode.hardwareMap.get(Servo.class, Config.SPECIMEN);
 
             /*dropper = opMode.hardwareMap.get(Servo.class, Config.PIXEL_DROPPER);
 

@@ -728,24 +728,24 @@ public class Drive extends Thread {
     }
 
     public void forward (double distance) {
-        moveDistance(DIRECTION.FORWARD,.4, distance, 0);
+        moveDistance(DIRECTION.FORWARD,1, distance, 0);
     }
 
     public void back (double distance) {
 
-        moveDistance(DIRECTION.BACK,.4, distance, 0);
+        moveDistance(DIRECTION.BACK,1, distance, 0);
     }
 
     public void strafeLeft (double distance) {
         //distance = Math.sqrt(Math.pow(distance,2 ) + Math.pow(distance,2));
         distance *= STRAFE_FACTOR;
-        moveDistance(DIRECTION.LEFT,.4, distance, 0);
+        moveDistance(DIRECTION.LEFT,1, distance, 0);
     }
 
     public void strafeRight (double distance) {
         //distance = Math.sqrt(Math.pow(distance,2 ) + Math.pow(distance,2));
         distance *= STRAFE_FACTOR;
-        moveDistance(DIRECTION.RIGHT,.4, distance, 0);
+        moveDistance(DIRECTION.RIGHT,1, distance, 0);
     }
 
     public void turn(double degrees) {
@@ -753,9 +753,9 @@ public class Drive extends Thread {
         double circumference = 2 * Math.PI * TURN_FACTOR;
         double inches = Math.abs(degrees) / 360 * circumference;
         if (degrees > 0)
-            moveDistance(DIRECTION.TURN_LEFT, 0.4,  inches, 0 );
+            moveDistance(DIRECTION.TURN_LEFT, 1,  inches, 0 );
         else
-            moveDistance(DIRECTION.TURN_RIGHT, 0.4,  inches, 0 );
+            moveDistance(DIRECTION.TURN_RIGHT, 1,  inches, 0 );
     }
 
     public void turnWithIMU(double degrees) {

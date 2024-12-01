@@ -54,7 +54,7 @@ public class Arm {
     private DcMotor rightArm = null;
     private CRServo wrist = null;
     private CRServo intake = null;
-
+    public Servo specimen = null;
     public ARM_STATE state  = ARM_STATE.NONE;
     private final ElapsedTime stateTime = new ElapsedTime();
 
@@ -85,6 +85,7 @@ public class Arm {
             rightElbow = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ELBOW);
             wrist = opMode.hardwareMap.get(CRServo.class, Config.WRIST);
             intake = opMode.hardwareMap.get(CRServo.class, Config.INTAKE);
+            specimen = opMode.hardwareMap.get(Servo.class, Config.SPECIMEN);
 
             leftArm.setDirection(DcMotor.Direction.REVERSE);
             leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -197,6 +198,14 @@ public class Arm {
             intake.setPower(0);
         }
         iState = setState;
+    }
+
+    public void setSpecimen(boolean enable) {
+        if (enable) {
+
+        } else {
+
+        }
     }
 
     public void enablelArm (boolean enable) {
