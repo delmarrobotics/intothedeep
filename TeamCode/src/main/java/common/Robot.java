@@ -74,8 +74,20 @@ public class Robot {
         drive.forward(distance);
     }
 
+    public void forwardSlow (double distance) {
+        drive.forwardSlow(distance);
+    }
+
+    public void forwardFast (double distance) {
+        drive.forwardFast(distance);
+    }
+
     public void back (double distance) {
         drive.back(distance);
+    }
+
+    public void backFast (double distance) {
+        drive.backFast(distance);
     }
 
     public void strafeLeft (double distance) {
