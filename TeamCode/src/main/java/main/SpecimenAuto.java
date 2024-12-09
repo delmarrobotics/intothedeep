@@ -67,11 +67,11 @@ public class SpecimenAuto extends LinearOpMode {
         robot.strafeRight(16);
         robot.turn(-15);
         robot.backFast(44);
-        /*robot.forwardFast(44);
+        robot.forwardFast(44);
         robot.strafeRight(10);
-        robot.backFast(44);*/
-        robot.forwardFast(14);
-        robot.turn(180);
+        robot.backFast(44);
+        robot.forward(14);
+        /*robot.turn(180);
         robot.arm.elbowMove(Arm.ELBOW_SAMPLE);
         robot.arm.armMove(Arm.ARM_SAMPLE);
         robot.arm.wristMove(Arm.intakeStates.FORWARD);
@@ -103,6 +103,9 @@ public class SpecimenAuto extends LinearOpMode {
         robot.arm.setSpecimen(false);
         robot.back(10);
         robot.arm.elbowMove(0);
-        robot.arm.armMove(0);
+        robot.arm.armMove(0);*/
+        sleep(500);
+        robot.strafeRight(25);
+        robot.back(20);
     }
 }
