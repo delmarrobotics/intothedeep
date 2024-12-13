@@ -19,11 +19,12 @@ public class Config {
     public static final String RIGHT_ARM        = "rightArm";
     public static final String LEFT_ELBOW       = "leftElbow";
     public static final String RIGHT_ELBOW      = "rightElbow";
-    public static final String WRIST            = "wrist";
-    public static final String INTAKE           = "intake";
+    public static final String WRIST_LEFT       = "wristLeft";
+    public static final String WRIST_RIGHT      = "wristRight";
     public static final String LEFT_HOOK        = "leftHook";
     public static final String RIGHT_HOOK       = "rightHook";
-    public static final String SPECIMEN         = "specimen";
+    public static final String SPECIMEN_LEFT         = "specimenLeft";
+    public static final String SPECIMEN_RIGHT         = "specimenRight";
 
     //public static final String CAMERA           = "Webcam 1";
 }

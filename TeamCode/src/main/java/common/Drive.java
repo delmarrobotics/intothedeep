@@ -150,11 +150,11 @@ public class Drive extends Thread {
         while (running && opMode.opModeIsActive()) {
 
             // Left stick to go forward back and strafe. Right stick to rotate. Left trigger accelerate.
-            Gamepad gamepad = opMode.gamepad1;
-            double x = -gamepad.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-            double y = -gamepad.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
-            double yaw = -gamepad.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
-            double speed = (gamepad.left_trigger * (MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
+            Gamepad gamepad1 = opMode.gamepad1;
+            double x = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+            double y = -gamepad1.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
+            double yaw = -gamepad1.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
+            double speed = (gamepad1.left_trigger * (MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
 
             // limit acceleration and deceleration to prevent skidding.
             double currentTime = driveTime.milliseconds();
@@ -205,7 +205,7 @@ public class Drive extends Thread {
 
                 driving = true;
                 lastDirection = direction;
-                //Logger.message("%-12s   %6.2f %6.2f %6.2f  %6.2f   %6.2f ", direction, x , y, yaw, gamepad.left_trigger, speed);
+                //Logger.message("%-12s   %6.2f %6.2f %6.2f  %6.2f   %6.2f ", direction, x , y, yaw, gamepad1.left_trigger, speed);
 
             } else if (driving) {
                 stopRobot();

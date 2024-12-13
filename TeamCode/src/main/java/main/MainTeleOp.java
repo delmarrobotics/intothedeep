@@ -2,6 +2,7 @@ package main;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import common.Logger;
@@ -51,11 +52,10 @@ public class MainTeleOp extends LinearOpMode {
             // If the start button is pressed, ignore a and b buttons. Start button is used to
             // select active gamepad.
             if (gamepad1.start || gamepad2.start) {
-                while (gamepad1.start || gamepad1.a || gamepad1.b ||  gamepad2.start  || gamepad2.a || gamepad2.b )
+                while (gamepad1.start || gamepad1.a || gamepad1.b || gamepad2.start || gamepad2.a || gamepad2.b)
                     sleep(100);
                 continue;
             }
-
             // POV Mode uses left stick to go forward, and right stick to rotate, left trigger accelerate.
             /*
             double drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
@@ -65,24 +65,15 @@ public class MainTeleOp extends LinearOpMode {
             robot.moveRobot(drive, strafe, yaw, speed);
             */
 
-            /*if (gamepad2.back) {
-                if (runtime.seconds() > 90 && mode == GamepadMode.ONE)
-                    Logger.message("Changed gamepad at %f", runtime.seconds());
-                changeGamepadMode();
-                while (gamepad2.back) sleep(100);
-            }*/
+            if (gamepad2.right_bumper) {
+                Logger.message("Changed linkage at %f", runtime.seconds());
+                changeLinkMode();
+                while (gamepad2.right_bumper) sleep(100);
+            }
 
             if (mode == GamepadMode.TWO) {
-                /*if (robot.hangingArm.control()) {
-                    continue;
-
-                } else if (gamepad2.b) {*/
-                if (gamepad2.b) {
-                    while (gamepad2.b) sleep(250);
-                } else  if (gamepad2.right_trigger > 0) {
-                    while (gamepad2.right_trigger > 0) sleep(100);
-                }
-
+                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                robot.arm.specimenLeft.setPosition(gamepad1.right_trigger * 0.6 + 0.1);
             } else if (mode == GamepadMode.ONE) {
                 /*if (robot.arm.positionCommand())
                     //robot.intakeOff();
@@ -92,7 +83,6 @@ public class MainTeleOp extends LinearOpMode {
                 if (robot.arm.control())
                     continue;*/
                 robot.arm.control();
-                robot.arm.specimen.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
             }
 
             if (gamepad1.a) {
@@ -120,17 +110,14 @@ public class MainTeleOp extends LinearOpMode {
         }
     }
 
-    private void changeGamepadMode () {
+    private void changeLinkMode () {
         if (mode == GamepadMode.ONE) {
             mode = GamepadMode.TWO;
-            displayControls();
-            displayControls2();
-
         } else if (mode == GamepadMode.TWO) {
             mode = GamepadMode.ONE;
-            displayControls();
-            displayControls2();
         }
+        displayControls();
+        displayControls2();
     }
 
     public void displayControls(){
@@ -138,15 +125,18 @@ public class MainTeleOp extends LinearOpMode {
                 "  left stick - drive robot\n" +
                 "  right stick - rotate robot\n" +
                 "  left trigger - accelerate robot speed\n" +
-                "  a - intake on / off\n" +
+                /*"  a - intake on / off\n" +
                 "  b - intake rotate up / down\n" +
                 "  y - intake reverse\n" +
-                "  x - drive to backdrop\n" +
+                "  x - drive to backdrop\n" +*/
                 "\n");
     }
     public void displayControls2() {
-        if (mode == GamepadMode.TWO)
-            telemetry.addLine(" right trigger - launch drone");
+        if (mode == GamepadMode.TWO) {
+            telemetry.addLine("linked mode");
+        } else {
+            telemetry.addLine("linked mode");
+        }
         telemetry.addLine("\n  back - toggle gamepad2 (pixelArm / hangingArm)");
     }
 
