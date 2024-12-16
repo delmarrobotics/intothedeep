@@ -16,8 +16,8 @@ import common.Robot;
 @SuppressWarnings("unused")
 public class MainTeleOp extends LinearOpMode {
 
-    public enum GamepadMode { ONE, TWO }
-    GamepadMode mode;
+    public enum GamepadMode { ONE, TWO, THREE }
+    public GamepadMode mode;
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -44,7 +44,7 @@ public class MainTeleOp extends LinearOpMode {
         displayControls();
         robot.arm.displayControls();
         displayControls2();
-        mode = GamepadMode.ONE;
+        mode = GamepadMode.THREE;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -72,8 +72,10 @@ public class MainTeleOp extends LinearOpMode {
             }
 
             if (mode == GamepadMode.TWO) {
-                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
                 robot.arm.specimenLeft.setPosition(gamepad1.right_trigger * 0.6 + 0.1);
+                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                robot.arm.controlLeft();
+                robot.arm.controlRight();
             } else if (mode == GamepadMode.ONE) {
                 /*if (robot.arm.positionCommand())
                     //robot.intakeOff();
@@ -83,6 +85,9 @@ public class MainTeleOp extends LinearOpMode {
                 if (robot.arm.control())
                     continue;*/
                 robot.arm.control();
+            } else if (mode == GamepadMode.THREE) {
+                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                robot.arm.controlRight();
             }
 
             if (gamepad1.a) {

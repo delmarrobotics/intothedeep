@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.Main;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -26,7 +27,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import main.MainTeleOp;
+
 public class Drive extends Thread {
+
+    // Assuming the public class is named MyClass and the variable is named myVariable
+    MainTeleOp mainTO = new MainTeleOp();
 
     static final boolean LOG_VERBOSE = false;
 
@@ -92,7 +98,6 @@ public class Drive extends Thread {
      * Initialize the drive train motors.
      */
     private void init() {
-
         initIMU();
 
         try {
@@ -151,69 +156,71 @@ public class Drive extends Thread {
 
             // Left stick to go forward back and strafe. Right stick to rotate. Left trigger accelerate.
             Gamepad gamepad1 = opMode.gamepad1;
-            double x = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-            double y = -gamepad1.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
-            double yaw = -gamepad1.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
-            double speed = (gamepad1.left_trigger * (MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
+            if (mainTO.mode == MainTeleOp.GamepadMode.ONE || mainTO.mode == MainTeleOp.GamepadMode.THREE) {
+                double x = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+                double y = -gamepad1.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
+                double yaw = -gamepad1.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
+                double speed = (gamepad1.left_trigger * (MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
 
-            // limit acceleration and deceleration to prevent skidding.
-            double currentTime = driveTime.milliseconds();
-            if (! driving) {
-                speed = MIN_SPEED;
-            } else {
-                double deltaTime = currentTime - lastTime;
-                double acceleration = (speed - lastSpeed) / (deltaTime);
-                if ((speed > lastSpeed) && (acceleration > (accelerationPerMS * deltaTime)))
-                    speed = lastSpeed + (accelerationPerMS * deltaTime);
-                else if ((speed < lastSpeed) && (acceleration < decelerationPerMS * deltaTime)) {  // ToDo not currently used
-                    speed = lastSpeed - (decelerationPerMS * deltaTime);
-                }
-            }
-            lastTime = currentTime;
-            lastSpeed = speed;
-
-            if (speed > MAX_SPEED) speed = MAX_SPEED;
-            if (x == 0 && y == 0 && yaw != 0) {
-                if (speed > MAX_ROTATE_SPEED) speed = MAX_ROTATE_SPEED;
-            }
-
-            if (x != 0 || y != 0 || yaw != 0) {
-                DIRECTION direction;
-                double MAX_STICK = 0.5;
-
-                if (yaw != 0) {
-                    direction =  DIRECTION.DRIVER;
-                } else if (Math.abs(x) == MAX_STICK || (x != 0 && y == 0 )) {
-                    if (x > 0)
-                        direction = DIRECTION.FORWARD;
-                    else
-                        direction = DIRECTION.BACK;
-                } else if (Math.abs(y) == MAX_STICK || (x == 0 /*&& y != 0 */ )) {
-                    if (y > 0)
-                        direction =  DIRECTION.LEFT;
-                    else
-                        direction =  DIRECTION.RIGHT;
+                // limit acceleration and deceleration to prevent skidding.
+                double currentTime = driveTime.milliseconds();
+                if (!driving) {
+                    speed = MIN_SPEED;
                 } else {
-                    direction =  DIRECTION.DRIVER;
+                    double deltaTime = currentTime - lastTime;
+                    double acceleration = (speed - lastSpeed) / (deltaTime);
+                    if ((speed > lastSpeed) && (acceleration > (accelerationPerMS * deltaTime)))
+                        speed = lastSpeed + (accelerationPerMS * deltaTime);
+                    else if ((speed < lastSpeed) && (acceleration < decelerationPerMS * deltaTime)) {  // not currently used
+                        speed = lastSpeed - (decelerationPerMS * deltaTime);
+                    }
+                }
+                lastTime = currentTime;
+                lastSpeed = speed;
+
+                if (speed > MAX_SPEED) speed = MAX_SPEED;
+                if (x == 0 && y == 0 && yaw != 0) {
+                    if (speed > MAX_ROTATE_SPEED) speed = MAX_ROTATE_SPEED;
                 }
 
-                if (direction == DIRECTION.DRIVER) {
-                    moveRobot(x, y, yaw, speed);
+                if (x != 0 || y != 0 || yaw != 0) {
+                    DIRECTION direction;
+                    double MAX_STICK = 0.5;
+
+                    if (yaw != 0) {
+                        direction = DIRECTION.DRIVER;
+                    } else if (Math.abs(x) == MAX_STICK || (x != 0 && y == 0)) {
+                        if (x > 0)
+                            direction = DIRECTION.FORWARD;
+                        else
+                            direction = DIRECTION.BACK;
+                    } else if (Math.abs(y) == MAX_STICK || (x == 0 /*&& y != 0 */)) {
+                        if (y > 0)
+                            direction = DIRECTION.LEFT;
+                        else
+                            direction = DIRECTION.RIGHT;
+                    } else {
+                        direction = DIRECTION.DRIVER;
+                    }
+
+                    if (direction == DIRECTION.DRIVER) {
+                        moveRobot(x, y, yaw, speed);
+                    } else {
+                        moveRobot(direction, speed);
+                    }
+
+                    driving = true;
+                    lastDirection = direction;
+                    //Logger.message("%-12s   %6.2f %6.2f %6.2f  %6.2f   %6.2f ", direction, x , y, yaw, gamepad1.left_trigger, speed);
+
+                } else if (driving) {
+                    stopRobot();
+                    lastDirection = DIRECTION.STOOPED;
+                    driving = false;
+
                 } else {
-                    moveRobot(direction, speed);
+                    Thread.yield();
                 }
-
-                driving = true;
-                lastDirection = direction;
-                //Logger.message("%-12s   %6.2f %6.2f %6.2f  %6.2f   %6.2f ", direction, x , y, yaw, gamepad1.left_trigger, speed);
-
-            } else if (driving) {
-                stopRobot();
-                lastDirection = DIRECTION.STOOPED;
-                driving = false;
-
-            } else {
-                Thread.yield();
             }
         }
         Logger.message("robot drive thread stopped");

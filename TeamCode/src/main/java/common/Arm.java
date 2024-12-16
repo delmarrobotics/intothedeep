@@ -6,6 +6,8 @@ package common;
 
 import static java.lang.Math.cos;
 
+import android.drm.DrmStore;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -549,7 +551,7 @@ public class Arm {
         Gamepad gamepad2 = opMode.gamepad2;
         Gamepad gamepad1 = opMode.gamepad1;
         boolean handledLeft = true;
-        boolean handledLRight = true;
+        boolean handledRight = true;
 
         run();   // ToDo remove when subclass from thread
 
@@ -720,7 +722,7 @@ public class Arm {
             }
         }*/
 
-        return handledLeft || handledLRight;
+        return handledLeft || handledRight;
     }
 
     public boolean controlLeft() {
@@ -795,37 +797,24 @@ public class Arm {
                 if (gamepad1.left_stick_y == 0 || lengthLeft >= 30) {
                     while (lengthLeft >= 30) {
                         leftElbow.setPower(-ELBOW_SPEED);
-                        lengthLeft = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
+                        lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
                     }
                     break;
                 }
             }
-            rightElbow.setPower(0);
             leftElbow.setPower(0);
             Logger.message("left elbow position %7d", leftElbow.getCurrentPosition());
-            Logger.message("right elbow position %7d", rightElbow.getCurrentPosition());
 
-        } else if (gamepad2.left_stick_x != 0) {
+        } else if (gamepad1.left_stick_x != 0) {
             // manually extend or retract the arm
             leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (gamepad2.left_stick_x > 0) {
+            if (gamepad1.left_stick_x > 0) {
                 leftArm.setPower(ARM_SPEED);
-                rightArm.setPower(ARM_SPEED);
-            } else if (gamepad2.left_stick_x < 0) {
+            } else if (gamepad1.left_stick_x < 0) {
                 leftArm.setPower(-ARM_SPEED);
-                rightArm.setPower(-ARM_SPEED);
             }
             while (true) {
-                lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
-                lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
-                if (gamepad2.left_stick_y == 0 || lengthRight >= 30) {
-                    while (lengthRight >= 30) {
-                        rightElbow.setPower(-ELBOW_SPEED);
-                        lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
-                    }
-                }
-                if (gamepad2.left_stick_y == 0 || lengthLeft >= 30) {
+                if (gamepad1.left_stick_y == 0 || lengthLeft >= 30) {
                     while (lengthLeft >= 30) {
                         leftElbow.setPower(-ELBOW_SPEED);
                         lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
@@ -834,12 +823,153 @@ public class Arm {
                 break;
             }
             int positionLeft = leftArm.getCurrentPosition();
-            int positionRight = rightArm.getCurrentPosition();
             leftArm.setTargetPosition(positionLeft);
-            rightArm.setTargetPosition(positionRight);
             leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             Logger.message( "left arm position %7d", positionLeft);
+
+        } else if (gamepad1.right_stick_y != 0) {
+            // manually rotate the bucket
+            /*while (gamepad2.right_stick_y != 0) {
+                double position = wrist.getPosition();
+                if (Double.isNaN(position))
+                    position = WRIST_HOME;
+                else if (gamepad2.right_stick_y > 0)
+                    position += 0.0125;
+                else if (gamepad2.right_stick_y < 0)
+                    position -= 0.0125;
+                wrist.setPosition(position);
+                opMode.sleep(100);
+            }
+            Logger.message("wrist position %f", wrist.getPosition());
+            wrist.setPower(gamepad2.right_stick_y);
+            Logger.message("wrist position %f", wrist.getPower());*/
+
+        } else {
+            /*wrist.setPower(gamepad2.right_stick_y);
+            handled = false;*/
+        }
+
+        /*if(gamepad2.right_bumper) {
+            if (iState == intakeStates.OFF || iState == intakeStates.REVERSE) {
+                intake.setPower(1);
+                iState = intakeStates.FORWARD;
+            } else {
+                intake.setPower(0);
+                iState = intakeStates.OFF;
+            }
+        } else if(gamepad2.left_bumper) {
+            if (iState == intakeStates.OFF || iState == intakeStates.FORWARD) {
+                intake.setPower(-1);
+                iState = intakeStates.REVERSE;
+            } else {
+                intake.setPower(0);
+                iState = intakeStates.OFF;
+            }
+        }*/
+
+        return handledLeft;
+    }
+
+    public boolean controlRight() {
+        Gamepad gamepad2 = opMode.gamepad2;
+        boolean handledRight = true;
+
+        run();   // remove when subclass from thread
+
+        if (gamepad2.back) {
+            rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightElbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
+        if (gamepad2.a) {
+            // Move the arm to the lower drop position
+            if (! aPressed2) {
+                positionArmAsynRight(ARM_POSITION.RUNG);
+                aPressed2 = true;
+            }
+        } else {
+            aPressed2 = false;
+        }
+
+        if (gamepad2.x) {
+            // Move the arm to the middle drop position
+            if (!xPressed2) {
+                positionArmAsynRight(ARM_POSITION.SAMPLE);
+                xPressed2 = true;
+            }
+        } else {
+            xPressed2 = false;
+        }
+
+        if (gamepad2.b) {
+            // Move the arm to the higher drop position
+            if (!bPressed2) {
+                positionArmAsynRight(ARM_POSITION.HIGH);
+                bPressed2 = true;
+            }
+        } else {
+            bPressed2 = false;
+        }
+
+        if (gamepad2.y) {
+            // Move the arm to the home position, need to add button support
+            if (!yPressed2) {
+                positionArmAsynRight(ARM_POSITION.HOME);
+                yPressed2 = true;
+            }
+        } else {
+            yPressed2 = false;
+        }
+
+        if (gamepad2.left_stick_y != 0) {
+            msCt1 = System.currentTimeMillis();
+            // manually move the elbow
+            rightElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            while (true) {
+                /*msCt2 = System.currentTimeMillis() - msCt1;
+                if (msCt2 <= 200) {
+                    if (gamepad2.left_stick_y > 0) {
+                        leftElbow.setPower(ELBOW_SPEED);
+                        rightElbow.setPower(ELBOW_SPEED);
+                    } else if (gamepad2.left_stick_y < 0) {
+                        leftElbow.setPower(-ELBOW_SPEED);
+                        rightElbow.setPower(-ELBOW_SPEED);
+                    }
+                } else {
+
+                }*/
+                lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
+                if (gamepad2.left_stick_y == 0 || lengthRight >= 30) {
+                    while (lengthRight >= 30) {
+                        rightElbow.setPower(-ELBOW_SPEED);
+                        lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
+                    }
+                    break;
+                }
+            }
+            rightElbow.setPower(0);
+            Logger.message("right elbow position %7d", rightElbow.getCurrentPosition());
+
+        } else if (gamepad2.left_stick_x != 0) {
+            // manually extend or retract the arm
+            rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (gamepad2.left_stick_x > 0) {
+                rightArm.setPower(ARM_SPEED);
+            } else if (gamepad2.left_stick_x < 0) {
+                rightArm.setPower(-ARM_SPEED);
+            }
+            while (true) {
+                if (gamepad2.left_stick_y == 0 || lengthRight >= 30) {
+                    while (lengthRight >= 30) {
+                        rightElbow.setPower(-ELBOW_SPEED);
+                        lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
+                    }
+                }
+                break;
+            }
+            int positionRight = rightArm.getCurrentPosition();
+            rightArm.setTargetPosition(positionRight);
+            rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             Logger.message( "left arm position %7d", positionRight);
 
         } else if (gamepad2.right_stick_y != 0) {
@@ -882,6 +1012,6 @@ public class Arm {
             }
         }*/
 
-        return handledLeft || handledLRight;
+        return handledRight;
     }
 }
