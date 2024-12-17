@@ -181,6 +181,32 @@ public class Arm {
         Logger.message("move elbowRight from %d to %d", from, newPosition);
     }
 
+    public void elbowMove(int newPosition) {
+        opMode.telemetry.addData("elbow", "elbowMove %d", newPosition);
+
+        int fromL = leftElbow.getCurrentPosition();
+        int fromR = rightElbow.getCurrentPosition();
+        leftElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightElbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftElbow.setTargetPosition(newPosition);
+        rightElbow.setTargetPosition(newPosition);
+        leftElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElbow.setPower(Math.abs(ELBOW_SPEED));
+        rightElbow.setPower(Math.abs(ELBOW_SPEED));
+
+        /*
+        while (elbow.isBusy()) {
+            if (!opMode.opModeIsActive()) {
+                break;
+            }
+        }
+        elbow.setPower(0);
+        */
+
+        Logger.message("move elbowRight from %d & d% to %d (%d) & (%d)", fromL, fromR, newPosition, leftElbow.getCurrentPosition(), rightArm.getCurrentPosition());
+    }
+
     /**
      * Extend or retract the pixel arm to the specified position. The home position is zero.
      *
@@ -230,16 +256,67 @@ public class Arm {
         */
     }
 
-    /*public void wristMove(intakeStates setState) {
-        if (setState == intakeStates.FORWARD) {
-            wrist.setPower(1);
-        } else if (setState == intakeStates.REVERSE) {
-            wrist.setPower(-1);
-        } else {
-            wrist.setPower(0);
+    public void armMove(int newPosition) {
+        Logger.message("armMove %d", newPosition);
+        int fromL = leftArm.getCurrentPosition();
+        int fromR = rightArm.getCurrentPosition();
+        leftArm.setTargetPosition(newPosition);
+        rightArm.setTargetPosition(newPosition);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setPower(Math.abs(ARM_SPEED));
+        rightArm.setPower(Math.abs(ARM_SPEED));
+        Logger.message("move arm from %d & %d to %d (%d) & (%d)", fromL, fromR, newPosition, leftArm.getCurrentPosition(), rightArm.getCurrentPosition());
+
+        /*
+        while (pixelArm.isBusy()) {
+            if (!opMode.opModeIsActive()) {
+                break;
+            }
         }
-        wState = setState;
-    }*/
+
+        if (newPosition == 0) {
+            // only stop the motor when the arm is lowered
+            pixelArm.setPower(0);
+        }
+        */
+    }
+
+    public void wristMoveLeft(intakeStates setState) {
+        if (setState == intakeStates.FORWARD) {
+            wristLeft.setPower(1);
+        } else if (setState == intakeStates.REVERSE) {
+            wristLeft.setPower(-1);
+        } else {
+            wristLeft.setPower(0);
+        }
+        wStateLeft = setState;
+    }
+
+    public void wristMoveRight(intakeStates setState) {
+        if (setState == intakeStates.FORWARD) {
+            wristRight.setPower(1);
+        } else if (setState == intakeStates.REVERSE) {
+            wristRight.setPower(-1);
+        } else {
+            wristRight.setPower(0);
+        }
+        wStateRight = setState;
+    }
+
+    public void wristMove(intakeStates setState) {
+        if (setState == intakeStates.FORWARD) {
+            wristLeft.setPower(1);
+            wristRight.setPower(1);
+        } else if (setState == intakeStates.REVERSE) {
+            wristLeft.setPower(-1);
+            wristRight.setPower(-1);
+        } else {
+            wristLeft.setPower(0);
+            wristRight.setPower(0);
+        }
+        wStateRight = setState;
+    }
 
     /*public void intakeSet(intakeStates setState) {
         if (setState == intakeStates.FORWARD) {
@@ -265,6 +342,16 @@ public class Arm {
             specimenRight.setPosition(0);
         } else {
             specimenRight.setPosition(1);
+        }
+    }
+
+    public void setSpecimen(boolean enable) {
+        if (enable) {
+            specimenRight.setPosition(0);
+            specimenLeft.setPosition(0);
+        } else {
+            specimenRight.setPosition(1);
+            specimenLeft.setPosition(1);
         }
     }
 

@@ -18,6 +18,7 @@ public class MainTeleOp extends LinearOpMode {
 
     public enum GamepadMode { ONE, TWO, THREE }
     public GamepadMode mode;
+    public GamepadMode modeSplit;
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -44,6 +45,7 @@ public class MainTeleOp extends LinearOpMode {
         displayControls();
         robot.arm.displayControls();
         displayControls2();
+        mode = GamepadMode.THREE;
         mode = GamepadMode.THREE;
 
         // run until the end of the match (driver presses STOP)
@@ -76,6 +78,12 @@ public class MainTeleOp extends LinearOpMode {
                 robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
                 robot.arm.controlLeft();
                 robot.arm.controlRight();
+                if (gamepad1.right_bumper) {
+                    Logger.message("Changed split mode (to THREE) at %f", runtime.seconds());
+                    mode = GamepadMode.THREE;
+                    modeSplit = GamepadMode.THREE;
+                    while (gamepad1.right_bumper) sleep(100);
+                }
             } else if (mode == GamepadMode.ONE) {
                 /*if (robot.arm.positionCommand())
                     //robot.intakeOff();
@@ -88,6 +96,12 @@ public class MainTeleOp extends LinearOpMode {
             } else if (mode == GamepadMode.THREE) {
                 robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
                 robot.arm.controlRight();
+                if (gamepad1.right_bumper) {
+                    Logger.message("Changed split mode (to TWO) at %f", runtime.seconds());
+                    mode = GamepadMode.TWO;
+                    modeSplit = GamepadMode.TWO;
+                    while (gamepad1.right_bumper) sleep(100);
+                }
             }
 
             if (gamepad1.a) {
@@ -117,8 +131,8 @@ public class MainTeleOp extends LinearOpMode {
 
     private void changeLinkMode () {
         if (mode == GamepadMode.ONE) {
-            mode = GamepadMode.TWO;
-        } else if (mode == GamepadMode.TWO) {
+            mode = modeSplit;
+        } else if (mode == GamepadMode.TWO || mode == GamepadMode.THREE) {
             mode = GamepadMode.ONE;
         }
         displayControls();
