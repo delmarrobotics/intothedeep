@@ -84,6 +84,7 @@ public class MainTeleOp extends LinearOpMode {
                     modeSplit = GamepadMode.THREE;
                     while (gamepad1.right_bumper) sleep(100);
                 }
+
             } else if (mode == GamepadMode.ONE) {
                 /*if (robot.arm.positionCommand())
                     //robot.intakeOff();

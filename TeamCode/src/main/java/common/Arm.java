@@ -60,10 +60,9 @@ public class Arm {
     private DcMotor rightElbow = null;
     private DcMotor leftArm   = null;
     private DcMotor rightArm = null;
-    private CRServo wristLeft = null;
     private CRServo wristRight = null;
-    private CRServo intakeLeft = null;
-    private CRServo intakeRight = null;
+    public Servo vel = null;
+    public Servo accel = null;
     public Servo specimenLeft = null;
     public Servo specimenRight = null;
     public ARM_STATE stateLeft  = ARM_STATE.NONE;
@@ -81,7 +80,6 @@ public class Arm {
     private boolean yPressed2 = false;
 
     public enum intakeStates { OFF, FORWARD, REVERSE }
-    public intakeStates wStateLeft = intakeStates.OFF;
     public intakeStates wStateRight = intakeStates.OFF;
 
     private boolean armActiveLeft = false;
@@ -100,7 +98,8 @@ public class Arm {
             rightArm = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ARM);
             leftElbow = opMode.hardwareMap.get(DcMotorEx.class, Config.LEFT_ELBOW);
             rightElbow = opMode.hardwareMap.get(DcMotorEx.class, Config.RIGHT_ELBOW);
-            wristLeft = opMode.hardwareMap.get(CRServo.class, Config.WRIST_LEFT);
+            vel = opMode.hardwareMap.get(Servo.class, Config.VEL);
+            accel = opMode.hardwareMap.get(Servo.class, Config.ACCEL);
             wristRight = opMode.hardwareMap.get(CRServo.class, Config.WRIST_RIGHT);
             specimenLeft = opMode.hardwareMap.get(Servo.class, Config.SPECIMEN_LEFT);
             specimenRight = opMode.hardwareMap.get(Servo.class, Config.SPECIMEN_RIGHT);
@@ -282,37 +281,12 @@ public class Arm {
         */
     }
 
-    public void wristMoveLeft(intakeStates setState) {
-        if (setState == intakeStates.FORWARD) {
-            wristLeft.setPower(1);
-        } else if (setState == intakeStates.REVERSE) {
-            wristLeft.setPower(-1);
-        } else {
-            wristLeft.setPower(0);
-        }
-        wStateLeft = setState;
-    }
-
     public void wristMoveRight(intakeStates setState) {
         if (setState == intakeStates.FORWARD) {
             wristRight.setPower(1);
         } else if (setState == intakeStates.REVERSE) {
             wristRight.setPower(-1);
         } else {
-            wristRight.setPower(0);
-        }
-        wStateRight = setState;
-    }
-
-    public void wristMove(intakeStates setState) {
-        if (setState == intakeStates.FORWARD) {
-            wristLeft.setPower(1);
-            wristRight.setPower(1);
-        } else if (setState == intakeStates.REVERSE) {
-            wristLeft.setPower(-1);
-            wristRight.setPower(-1);
-        } else {
-            wristLeft.setPower(0);
             wristRight.setPower(0);
         }
         wStateRight = setState;
@@ -826,7 +800,7 @@ public class Arm {
         if (gamepad1.a) {
             // Move the arm to the lower drop position
             if (! aPressed1) {
-                positionArmAsynLeft(ARM_POSITION.RUNG);
+                //positionArmAsynLeft(ARM_POSITION.RUNG);
                 aPressed1 = true;
             }
         } else {
@@ -836,7 +810,7 @@ public class Arm {
         if (gamepad1.x) {
             // Move the arm to the middle drop position
             if (!xPressed1) {
-                positionArmAsynLeft(ARM_POSITION.SAMPLE);
+                //positionArmAsynLeft(ARM_POSITION.SAMPLE);
                 xPressed1 = true;
             }
         } else {
@@ -846,7 +820,7 @@ public class Arm {
         if (gamepad1.b) {
             // Move the arm to the higher drop position
             if (!bPressed1) {
-                positionArmAsynLeft(ARM_POSITION.HIGH);
+                //positionArmAsynLeft(ARM_POSITION.HIGH);
                 bPressed1 = true;
             }
         } else {
@@ -915,26 +889,46 @@ public class Arm {
             Logger.message( "left arm position %7d", positionLeft);
 
         } else if (gamepad1.right_stick_y != 0) {
-            // manually rotate the bucket
-            /*while (gamepad2.right_stick_y != 0) {
-                double position = wrist.getPosition();
+            // manually rotate accel
+            while (gamepad1.right_stick_y != 0) {
+                double position = accel.getPosition();
                 if (Double.isNaN(position))
                     position = WRIST_HOME;
-                else if (gamepad2.right_stick_y > 0)
+                else if (gamepad1.right_stick_y > 0)
                     position += 0.0125;
-                else if (gamepad2.right_stick_y < 0)
+                else if (gamepad1.right_stick_y < 0)
                     position -= 0.0125;
-                wrist.setPosition(position);
+                accel.setPosition(position);
                 opMode.sleep(100);
             }
-            Logger.message("wrist position %f", wrist.getPosition());
-            wrist.setPower(gamepad2.right_stick_y);
-            Logger.message("wrist position %f", wrist.getPower());*/
+            Logger.message("accel position %f", accel.getPosition());
+            /*accel.setPower(gamepad1.right_stick_y);
+            Logger.message("accel position %f", accel.getPower());*/
+
+        } else if (gamepad1.right_stick_x != 0) {
+            // manually rotate vel
+            while (gamepad1.right_stick_x != 0) {
+                double position = vel.getPosition();
+                if (Double.isNaN(position))
+                    position = WRIST_HOME;
+                else if (gamepad1.right_stick_x > 0)
+                    position += 0.0125;
+                else if (gamepad1.right_stick_x < 0)
+                    position -= 0.0125;
+                vel.setPosition(position);
+                opMode.sleep(100);
+            }
+            Logger.message("accel position %f", vel.getPosition());
 
         } else {
-            /*wrist.setPower(gamepad2.right_stick_y);
-            handled = false;*/
+            //wrist.setPower(gamepad2.right_stick_y);
+            //handled = false;
         }
+
+        /*right joystick left and right moves 1st servo (vel)
+        right y - 2nd servo l & r (accel)
+        right_trigger controls specimen (jerk, but mostly known as specimenLeft)
+         */
 
         /*if(gamepad2.right_bumper) {
             if (iState == intakeStates.OFF || iState == intakeStates.REVERSE) {
