@@ -49,6 +49,7 @@ public class SampleBucketAuto extends LinearOpMode {
         //elbow -3224
 
         //robot.vision.enableCameraStream(false);
+        /*paused for new arm
         robot.strafeRight(25.5);
         robot.arm.elbowMove(-2376);
         sleep(500);
@@ -92,6 +93,6 @@ public class SampleBucketAuto extends LinearOpMode {
         robot.arm.armMove(0);
         robot.turn(-51);
         robot.back(82);
-        robot.strafeLeft(30);
+        robot.strafeLeft(30);*/
     }
 }
