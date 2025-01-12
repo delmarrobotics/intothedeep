@@ -17,7 +17,7 @@ import common.Robot;
 public class MainTeleOp extends LinearOpMode {
 
     public enum GamepadMode { ONE, TWO, THREE }
-    public GamepadMode mode;
+    public static GamepadMode mode;
     public GamepadMode modeSplit;
 
     // Declare OpMode members.
@@ -45,7 +45,6 @@ public class MainTeleOp extends LinearOpMode {
         displayControls();
         robot.arm.displayControls();
         displayControls2();
-        mode = GamepadMode.THREE;
         mode = GamepadMode.THREE;
 
         // run until the end of the match (driver presses STOP)
@@ -96,7 +95,9 @@ public class MainTeleOp extends LinearOpMode {
                 robot.arm.control();
             } else if (mode == GamepadMode.THREE) {
                 robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                robot.arm.specimenLeft.setPosition(0.1);
                 robot.arm.controlRight();
+
                 if (gamepad1.right_bumper) {
                     Logger.message("Changed split mode (to TWO) at %f", runtime.seconds());
                     mode = GamepadMode.TWO;
@@ -159,5 +160,4 @@ public class MainTeleOp extends LinearOpMode {
         }
         telemetry.addLine("\n  back - toggle gamepad2 (pixelArm / hangingArm)");
     }
-
 }

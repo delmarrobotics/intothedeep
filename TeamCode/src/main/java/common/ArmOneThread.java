@@ -6,18 +6,15 @@ package common;
 
 import static java.lang.Math.cos;
 
-import android.drm.DrmStore;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.CRServo;
 
-public class Arm {
+public class ArmOneThread {
 
     //gamepad1 drives left, gamepad2 drives right
 
@@ -85,12 +82,9 @@ public class Arm {
     private boolean armActiveLeft = false;
     private boolean armActiveRight = false;
 
-    public Thread leftArmThread;
-    public Thread rightArmThread;
-
     public LinearOpMode opMode;
 
-    public Arm(LinearOpMode opMode) {
+    public ArmOneThread(LinearOpMode opMode) {
         this.opMode = opMode;
         init();
     }
@@ -134,8 +128,6 @@ public class Arm {
         } catch (Exception e) {
             Logger.error(e, "Pixel arm hardware not found");
         }
-        leftArmThread = new Thread(new LeftArmRunner());
-        rightArmThread = new Thread(new RightArmRunner());
     }
 
     /**
@@ -343,9 +335,7 @@ public class Arm {
 
 
     public void run () {
-        leftArmThread.start();
-        rightArmThread.start();
-        /*lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
+        lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
         lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
         opMode.telemetry.addData("lengthLeft", lengthLeft);
         opMode.telemetry.addData("lengthRight", lengthRight);
@@ -452,7 +442,7 @@ public class Arm {
             rightArm.setPower(0);
             rightArm.setPower(0);
             stateRight = ARM_STATE.NONE;
-        }*/
+        }
     }
 
     public void dropSampleLeft () {
@@ -1059,126 +1049,4 @@ public class Arm {
             }*/
         return handledRight;
     }
-
-    private class LeftArmRunner implements Runnable {
-        @Override
-        public void run() {
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(leftElbow.getCurrentPosition() / encoderDegree));
-            opMode.telemetry.addData("lengthLeft", lengthLeft);
-            //Logger.message("run");
-
-            if (armActiveLeft) {
-                //Logger.message("armActive");
-                controlLeft();
-            }
-
-            if (stateLeft == ARM_STATE.NONE) {
-                //Logger.message("none");
-                return;
-            }
-
-            if (stateLeft == ARM_STATE.MOVE_SAMPLE) {
-                //Logger.message("low");
-                if (stateTime.milliseconds() < 500)
-                    return;
-                armMoveLeft((ARM_SAMPLE));
-                //wristMove(WRIST_DROP_LOW);
-                stateLeft = ARM_STATE.NONE;
-                Logger.message("pixel arm and wrist to low position");
-
-
-            } else if (stateLeft == ARM_STATE.MOVE_HIGH) {
-                //Logger.message("high");
-                if (stateTime.milliseconds() < 500)
-                    return;
-                armMoveLeft((ARM_OUT_HIGH));
-                //wristMove(WRIST_DROP_HIGH);
-                stateLeft = ARM_STATE.NONE;
-                Logger.message("pixel arm and wrist to high position");
-
-            } else if (stateLeft == ARM_STATE.MOVE_HOME) {
-                Logger.message("home");
-                if (stateTime.milliseconds() < 1000)
-                    return;
-                elbowMoveLeft(ELBOW_DOWN);
-                Logger.message("pixel elbow to home position");
-
-                if (leftArm.isBusy())
-                    return;
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-                stateLeft = ARM_STATE.NONE;
-                Logger.message("pixel arm power off");
-
-            } else if (stateLeft == ARM_STATE.ARM_UP) {
-                Logger.message("up");
-                if (stateTime.milliseconds() < 10000)
-                    return;
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-                stateLeft = ARM_STATE.NONE;
-            }
-        }
-    }
-
-    private class RightArmRunner implements Runnable {
-        @Override
-        public void run() {
-            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree));
-            opMode.telemetry.addData("lengthRight", lengthRight);
-            //Logger.message("run");
-            if (armActiveRight) {
-                //Logger.message("armActive");
-                controlRight();
-            }
-
-            if (stateRight == ARM_STATE.NONE) {
-                //Logger.message("none");
-                return;
-            }
-
-            if (stateRight == ARM_STATE.MOVE_SAMPLE) {
-                //Logger.message("low");
-                if (stateTime.milliseconds() < 500)
-                    return;
-                armMoveRight((ARM_SAMPLE));
-                //wristMove(WRIST_DROP_LOW);
-                stateRight = ARM_STATE.NONE;
-                Logger.message("pixel arm and wrist to low position");
-
-
-            } else if (stateRight == ARM_STATE.MOVE_HIGH) {
-                //Logger.message("high");
-                if (stateTime.milliseconds() < 500)
-                    return;
-                armMoveRight((ARM_OUT_HIGH));
-                //wristMove(WRIST_DROP_HIGH);
-                stateRight = ARM_STATE.NONE;
-                Logger.message("pixel arm and wrist to high position");
-
-            } else if (stateRight == ARM_STATE.MOVE_HOME) {
-                Logger.message("home");
-                if (stateTime.milliseconds() < 1000)
-                    return;
-                elbowMoveRight(ELBOW_DOWN);
-                Logger.message("pixel elbow to home position");
-
-                if (rightArm.isBusy())
-                    return;
-                rightArm.setPower(0);
-                rightArm.setPower(0);
-                stateRight = ARM_STATE.NONE;
-                Logger.message("pixel arm power off");
-
-            } else if (stateRight == ARM_STATE.ARM_UP) {
-                Logger.message("up");
-                if (stateTime.milliseconds() < 10000)
-                    return;
-                rightArm.setPower(0);
-                rightArm.setPower(0);
-                stateRight = ARM_STATE.NONE;
-            }
-        }
-    }
 }
-
