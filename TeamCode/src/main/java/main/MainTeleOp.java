@@ -16,7 +16,7 @@ import common.Robot;
 @SuppressWarnings("unused")
 public class MainTeleOp extends LinearOpMode {
 
-    public enum GamepadMode { ONE, TWO, THREE }
+    public enum GamepadMode { ONE, TWO, THREE, FOUR }
     public static GamepadMode mode;
     public GamepadMode modeSplit;
 
@@ -102,6 +102,29 @@ public class MainTeleOp extends LinearOpMode {
                     Logger.message("Changed split mode (to TWO) at %f", runtime.seconds());
                     mode = GamepadMode.TWO;
                     modeSplit = GamepadMode.TWO;
+                    while (gamepad1.right_bumper) sleep(100);
+                }
+                if (gamepad2.left_bumper) {
+                    Logger.message("Changed split mode (to FOUR) at %f", runtime.seconds());
+                    mode = GamepadMode.FOUR;
+                    modeSplit = GamepadMode.FOUR;
+                    while (gamepad1.right_bumper) sleep(100);
+                }
+            } else if (mode == GamepadMode.FOUR) {
+                robot.arm.specimenLeft.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                robot.arm.specimenRight.setPosition(0.1);
+                robot.arm.controlLeft2();
+
+                if (gamepad1.right_bumper) {
+                    Logger.message("Changed split mode (to TWO) at %f", runtime.seconds());
+                    mode = GamepadMode.TWO;
+                    modeSplit = GamepadMode.TWO;
+                    while (gamepad1.right_bumper) sleep(100);
+                }
+                if (gamepad2.left_bumper) {
+                    Logger.message("Changed split mode (to THREE) at %f", runtime.seconds());
+                    mode = GamepadMode.THREE;
+                    modeSplit = GamepadMode.THREE;
                     while (gamepad1.right_bumper) sleep(100);
                 }
             }
