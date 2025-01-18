@@ -158,7 +158,7 @@ public class Drive extends Thread {
             double speed = 0;
             // Left stick to go forward back and strafe. Right stick to rotate. Left trigger accelerate.
             Gamepad gamepad1 = opMode.gamepad1;
-            if (MainTeleOp.mode == MainTeleOp.GamepadMode.THREE || MainTeleOp.mode == MainTeleOp.GamepadMode.ONE) {
+            if (MainTeleOp.mode == MainTeleOp.GamepadMode.THREE || MainTeleOp.mode == MainTeleOp.GamepadMode.ONE || MainTeleOp.mode == MainTeleOp.GamepadMode.FOUR) {
                 x = gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
                 y = gamepad1.left_stick_x / 1.5;  // Reduce strafe rate to 66%. (was 50%)
                 yaw = -gamepad1.right_stick_x / 3.0;  // Reduce rotate rate to 33%.
@@ -439,35 +439,35 @@ public class Drive extends Thread {
         int rightBackSign = 0;
 
         if (direction == DIRECTION.FORWARD) {
+            leftFrontSign  = -1;
+            rightFrontSign = -1;
+            leftBackSign   = -1;
+            rightBackSign  = -1;
+        } else if (direction == DIRECTION.BACK) {
             leftFrontSign  = 1;
             rightFrontSign = 1;
             leftBackSign   = 1;
             rightBackSign  = 1;
-        } else if (direction == DIRECTION.BACK) {
-            leftFrontSign  = -1;
-            rightFrontSign = -1;
-            leftBackSign   = -1;
-            rightBackSign  = -1;
         } else if (direction == DIRECTION.LEFT) {
-            leftFrontSign  = -1;
-            rightFrontSign =  1;
-            leftBackSign   =  1;
-            rightBackSign  = -1;
+            leftFrontSign  = 1;
+            rightFrontSign =  -1;
+            leftBackSign   =  -1;
+            rightBackSign  = 1;
         } else if (direction == DIRECTION.RIGHT) {
-            leftFrontSign  =  1;
-            rightFrontSign = -1;
-            leftBackSign   = -1;
-            rightBackSign  =  1;
+            leftFrontSign  =  -1;
+            rightFrontSign = 1;
+            leftBackSign   = 1;
+            rightBackSign  =  -1;
         } else if (direction == DIRECTION.TURN_LEFT) {
-            leftFrontSign  = -1;
-            rightFrontSign =  1;
-            leftBackSign   = -1;
-            rightBackSign  =  1;
+            leftFrontSign  = 1;
+            rightFrontSign =  -1;
+            leftBackSign   = 1;
+            rightBackSign  =  -1;
         } else if (direction == DIRECTION.TURN_RIGHT){
-            leftFrontSign  =  1;
-            rightFrontSign = -1;
-            leftBackSign   =  1;
-            rightBackSign  = -1;
+            leftFrontSign  =  -1;
+            rightFrontSign = 1;
+            leftBackSign   =  -1;
+            rightBackSign  = 1;
         }
 
         DcMotor.RunMode mode = leftFrontDrive.getMode();
