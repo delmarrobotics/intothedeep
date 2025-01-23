@@ -108,7 +108,7 @@ public class MainTeleOp extends LinearOpMode {
                     Logger.message("Changed split mode (to FOUR) at %f", runtime.seconds());
                     mode = GamepadMode.FOUR;
                     modeSplit = GamepadMode.FOUR;
-                    while (gamepad1.right_bumper) sleep(100);
+                    while (gamepad1.left_bumper) sleep(100);
                 }
             } else if (mode == GamepadMode.FOUR) {
                 robot.arm.specimenLeft.setPosition(gamepad2.right_trigger * 0.04 + 0.7);
@@ -125,7 +125,7 @@ public class MainTeleOp extends LinearOpMode {
                     Logger.message("Changed split mode (to THREE) at %f", runtime.seconds());
                     mode = GamepadMode.THREE;
                     modeSplit = GamepadMode.THREE;
-                    while (gamepad1.right_bumper) sleep(100);
+                    while (gamepad1.left_bumper) sleep(100);
                 }
             }
 

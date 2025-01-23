@@ -307,10 +307,10 @@ public class Drive extends Thread {
 
             double scale = (1 / max) * speed;
 
-            leftFrontPower *= scale;
+            /*leftFrontPower *= scale;
             rightFrontPower *= scale;
             leftBackPower *= scale;
-            rightBackPower *= scale;
+            rightBackPower *= scale;*/
         }
 
         // Send powers to the wheels.
@@ -358,15 +358,15 @@ public class Drive extends Thread {
             leftBackSign   = -1;
             rightBackSign  =  1;
         } else if (direction == DIRECTION.TURN_LEFT) {
-            leftFrontSign  = -1;
-            rightFrontSign =  1;
-            leftBackSign   = -1;
-            rightBackSign  =  1;
+            leftFrontSign  = 1;
+            rightFrontSign =  -1;
+            leftBackSign   = 1;
+            rightBackSign  =  -1;
         } else if (direction == DIRECTION.TURN_RIGHT){
-            leftFrontSign  =  1;
-            rightFrontSign = -1;
-            leftBackSign   =  1;
-            rightBackSign  = -1;
+            leftFrontSign  =  -1;
+            rightFrontSign = 1;
+            leftBackSign   =  -1;
+            rightBackSign  = 1;
         }
 
         // If the direction have changed get the encoder positions.
@@ -390,10 +390,15 @@ public class Drive extends Thread {
         double leftBackAdjust = (maxPos - leftBackPos) * scale;
         double rightBackAdjust = (maxPos - rightBackPos) * scale;
 
-        double leftFrontPower = (speed + leftFrontAdjust) * leftFrontSign;
+        /*double leftFrontPower = (speed + leftFrontAdjust) * leftFrontSign;
         double rightFrontPower = (speed + rightFrontAdjust) * rightFrontSign;
         double leftBackPower = (speed + leftBackAdjust) * leftBackSign;
-        double rightBackPower = (speed + rightBackAdjust) * rightBackSign;
+        double rightBackPower = (speed + rightBackAdjust) * rightBackSign;*/
+
+        double leftFrontPower = (speed) * leftFrontSign;
+        double rightFrontPower = (speed) * rightFrontSign;
+        double leftBackPower = (speed) * leftBackSign;
+        double rightBackPower = (speed) * rightBackSign;
 
         leftFrontDrive.setPower(leftFrontPower);
         rightFrontDrive.setPower(rightFrontPower);
@@ -500,9 +505,11 @@ public class Drive extends Thread {
             double maxPos = Math.max(Math.max(Math.max(leftFrontPos, rightFrontPos), leftBackPos), rightBackPos);
 
             double speedRange = Math.max(Math.abs(speed) - RAMP_MIN_SPEED, 0);
-            double ramUp = (elapsedTime.milliseconds() / RAMP_TIME) * speedRange + RAMP_MIN_SPEED;
-            double ramDown = (Math.pow((Math.abs(target) - maxPos), 2) / Math.pow(RAMP_DISTANCE, 2)) * speedRange + RAMP_MIN_SPEED;
-            double rampPower = Math.min(Math.min(ramUp, ramDown), speed);
+            //double ramUp = (elapsedTime.milliseconds() / RAMP_TIME) * speedRange + RAMP_MIN_SPEED;
+            double ramUp = speedRange + RAMP_MIN_SPEED;
+            //double ramDown = (Math.pow((Math.abs(target) - maxPos), 2) / Math.pow(RAMP_DISTANCE, 2)) * speedRange + RAMP_MIN_SPEED;
+            //double rampPower = Math.min(Math.min(ramUp, ramDown), speed);
+            double rampPower = Math.min(ramUp, speed);
 
             double scale = .0015;
             double leftFrontAdjust = (maxPos - leftFrontPos) * scale;
@@ -510,10 +517,15 @@ public class Drive extends Thread {
             double leftBackAdjust = (maxPos - leftBackPos) * scale;
             double rightBackAdjust = (maxPos - rightBackPos) * scale;
 
-            leftFrontDrive.setPower((rampPower + leftFrontAdjust) * leftFrontSign);
+            /*leftFrontDrive.setPower((rampPower + leftFrontAdjust) * leftFrontSign);
             rightFrontDrive.setPower((rampPower + rightFrontAdjust) * rightFrontSign);
             leftBackDrive.setPower((rampPower + leftBackAdjust) * leftBackSign);
-            rightBackDrive.setPower((rampPower + rightBackAdjust) * rightBackSign);
+            rightBackDrive.setPower((rampPower + rightBackAdjust) * rightBackSign);*/
+
+            leftFrontDrive.setPower((rampPower) * leftFrontSign);
+            rightFrontDrive.setPower((rampPower) * rightFrontSign);
+            leftBackDrive.setPower((rampPower) * leftBackSign);
+            rightBackDrive.setPower((rampPower) * rightBackSign);
 
             for (DcMotor motor : motors)
                 if (! motor.isBusy())
@@ -703,7 +715,7 @@ public class Drive extends Thread {
     }
 
     public double encoderTicksPerInch() {
-        return (COUNTS_PER_INCH * DRIVE_FACTOR);
+        return (25.017783857729079);
 
     }
     public List<Double> getWheelPositions() {
@@ -771,7 +783,7 @@ public class Drive extends Thread {
 
     public void turn(double degrees) {
 
-        double circumference = 2 * Math.PI * TURN_FACTOR;
+        double circumference = 2 * Math.PI * 18.3003819;
         double inches = Math.abs(degrees) / 360 * circumference;
         if (degrees > 0)
             moveDistance(DIRECTION.TURN_LEFT, 1,  inches, 0 );

@@ -33,7 +33,7 @@ public class Arm {
     private final double DRIVE_GEAR_REDUCTION = 26.9;              // Gearing
     private final double WHEEL_DIAMETER_INCHES = (96 / 25.4);    // 96 mm wheels converted to inches
 
-    private final double encoderDegree = 31.11; //encoder cts per degree 42.22
+    private final double encoderDegree = 27.9; //encoder cts per degree 42.22
     private final double encoderInch = -1129 / 7.311;
 
     public double lengthLeft = 0;
@@ -345,8 +345,8 @@ public class Arm {
 
 
     public void run () {
-        lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
-        lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+        lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
+        lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
         opMode.telemetry.addData("lengthLeft", lengthLeft);
         opMode.telemetry.addData("lengthRight", lengthRight);
         //Logger.message("run");
@@ -696,11 +696,11 @@ public class Arm {
             if (gamepad2.left_stick_y == 0 && rightElbowState == armStates.MOVE) {
                 rightElbow.setPower(0);
             }
-            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthRight >= 30) {
                 rightElbow.setPower(-ELBOW_SPEED);
                 rightElbowState = armStates.BARRIER;
-                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(rightElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad2.left_stick_y == 0 || rightElbowState == armStates.BARRIER) {
                 rightElbow.setPower(0);
                 rightElbowState = armStates.OFF;
@@ -721,11 +721,11 @@ public class Arm {
             if (gamepad2.left_stick_x == 0 && rightArmState == armStates.MOVE) {
                 rightArm.setPower(0);
             }
-            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthRight >= 30) {
                 rightArm.setPower(ARM_SPEED);
                 rightArmState = armStates.BARRIER;
-                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree+ 40));
             } else if (gamepad2.left_stick_x == 0 || rightArmState == armStates.BARRIER) {
                 rightArm.setPower(0);
                 rightArmState = armStates.OFF;
@@ -747,11 +747,11 @@ public class Arm {
             if (gamepad2.left_stick_y == 0 && leftElbowState == armStates.MOVE) {
                 leftElbow.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftElbow.setPower(-ELBOW_SPEED);
                 leftElbowState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else  if (gamepad2.left_stick_y == 0 || leftElbowState == armStates.BARRIER){
                 leftElbow.setPower(0);
                 leftElbowState = armStates.OFF;
@@ -772,11 +772,11 @@ public class Arm {
             if (gamepad2.left_stick_x == 0 && leftArmState == armStates.MOVE) {
                 leftArm.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftArm.setPower(ARM_SPEED);
                 leftArmState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad2.left_stick_x == 0 || leftArmState == armStates.BARRIER) {
                 leftArm.setPower(0);
                 leftArmState = armStates.OFF;
@@ -870,11 +870,11 @@ public class Arm {
             if (gamepad1.left_stick_y == 0 && leftElbowState == armStates.MOVE) {
                 leftElbow.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftElbow.setPower(-ELBOW_SPEED);
                 leftElbowState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else  if (gamepad1.left_stick_y == 0 || leftElbowState == armStates.BARRIER){
                 leftElbow.setPower(0);
                 leftElbowState = armStates.OFF;
@@ -895,11 +895,11 @@ public class Arm {
             if (gamepad1.left_stick_x == 0 && leftArmState == armStates.MOVE) {
                 leftArm.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftArm.setPower(ARM_SPEED);
                 leftArmState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad1.left_stick_x == 0 || leftArmState == armStates.BARRIER) {
                 leftArm.setPower(0);
                 leftArmState = armStates.OFF;
@@ -998,11 +998,11 @@ public class Arm {
             if (gamepad2.left_stick_y == 0 && leftElbowState == armStates.MOVE) {
                 leftElbow.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftElbow.setPower(-ELBOW_SPEED);
                 leftElbowState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else  if (gamepad2.left_stick_y == 0 || leftElbowState == armStates.BARRIER){
                 leftElbow.setPower(0);
                 leftElbowState = armStates.OFF;
@@ -1023,11 +1023,11 @@ public class Arm {
             if (gamepad2.left_stick_x == 0 && leftArmState == armStates.MOVE) {
                 leftArm.setPower(0);
             }
-            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthLeft = (leftArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthLeft >= 30) {
                 leftArm.setPower(ARM_SPEED);
                 leftArmState = armStates.BARRIER;
-                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((leftElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthLeft = (leftArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-leftElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad2.left_stick_x == 0 || leftArmState == armStates.BARRIER) {
                 leftArm.setPower(0);
                 leftArmState = armStates.OFF;
@@ -1157,11 +1157,11 @@ public class Arm {
             if (gamepad2.left_stick_y == 0 && rightElbowState == armStates.MOVE) {
                 rightElbow.setPower(0);
             }
-            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthRight >= 30) {
                 rightElbow.setPower(-ELBOW_SPEED);
                 rightElbowState = armStates.BARRIER;
-                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad2.left_stick_y == 0 || rightElbowState == armStates.BARRIER) {
                 rightElbow.setPower(0);
                 rightElbowState = armStates.OFF;
@@ -1182,11 +1182,11 @@ public class Arm {
             if (gamepad2.left_stick_x == 0 && rightArmState == armStates.MOVE) {
                 rightArm.setPower(0);
             }
-            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+            lengthRight = (rightArm.getCurrentPosition()/encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             if (lengthRight >= 30) {
                 rightArm.setPower(ARM_SPEED);
                 rightArmState = armStates.BARRIER;
-                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians((rightElbow.getCurrentPosition() / encoderDegree) + 40));
+                lengthRight = (rightArm.getCurrentPosition() / encoderInch + 10.5) * cos(Math.toRadians(-rightElbow.getCurrentPosition() / encoderDegree + 40));
             } else if (gamepad2.left_stick_x == 0 || rightArmState == armStates.BARRIER) {
                 rightArm.setPower(0);
                 rightArmState = armStates.OFF;
