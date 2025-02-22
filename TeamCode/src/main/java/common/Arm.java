@@ -320,18 +320,18 @@ public class Arm {
 
     public void setSpecimenRight(boolean enable) {
         if (enable) {
-            specimenRight.setPosition(0);
+            specimenRight.setPosition(0.360);
         } else {
-            specimenRight.setPosition(1);
+            specimenRight.setPosition(0.525);
         }
     }
 
     public void setSpecimen(boolean enable) {
         if (enable) {
-            specimenRight.setPosition(0);
+            specimenRight.setPosition(0.360);
             specimenLeft.setPosition(0);
         } else {
-            specimenRight.setPosition(1);
+            specimenRight.setPosition(0.525);
             specimenLeft.setPosition(1);
         }
     }

@@ -84,7 +84,7 @@ public class Drive extends Thread {
 
     private DIRECTION lastDirection = DIRECTION.STOOPED;
 
-    List<DcMotorEx> motors;
+    public List<DcMotorEx> motors;
     LinearOpMode opMode;
 
     public Drive(LinearOpMode opMode) {
@@ -526,10 +526,10 @@ public class Drive extends Thread {
             leftBackDrive.setPower((rampPower + leftBackAdjust) * leftBackSign);
             rightBackDrive.setPower((rampPower + rightBackAdjust) * rightBackSign);*/
 
-            leftFrontDrive.setPower((rampPower) * leftFrontSign);
-            rightFrontDrive.setPower((rampPower) * rightFrontSign);
-            leftBackDrive.setPower((rampPower) * leftBackSign);
-            rightBackDrive.setPower((rampPower) * rightBackSign);
+            leftFrontDrive.setPower(leftFrontSign);
+            rightFrontDrive.setPower(rightFrontSign);
+            leftBackDrive.setPower(leftBackSign);
+            rightBackDrive.setPower(rightBackSign);
 
             for (DcMotor motor : motors)
                 if (! motor.isBusy())

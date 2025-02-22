@@ -8,6 +8,7 @@ package main;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import common.Robot;
@@ -44,12 +45,27 @@ public class TA extends LinearOpMode {
 
         //robot.vision.enableCameraStream(false);
         //paused for new arm
-        robot.turn(90);
-        robot.forwardFast(60);
-        robot.arm.elbowMoveLeft(-1260);
-        robot.arm.armMoveLeft(-1770);
-        robot.turn(90);
-        robot.forward(24);
+
+        DcMotor.RunMode mode = robot.drive.leftFrontDrive.getMode();
+        for (DcMotor motor : robot.drive.motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        robot.drive.leftFrontDrive.setTargetPosition(100);
+        robot.drive.rightFrontDrive.setTargetPosition(-100);
+        robot.drive.leftBackDrive.setTargetPosition(100);
+        robot.drive.rightBackDrive.setTargetPosition(-100);
+
+        // Turn On RUN_TO_POSITION
+        for (DcMotor motor : robot.drive.motors)
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.drive.leftFrontDrive.setPower(1);
+        robot.drive.rightFrontDrive.setPower(1);
+        robot.drive.leftBackDrive.setPower(1);
+        robot.drive.rightBackDrive.setPower(1);
+
         sleep(30000);
         /*robot.forward(24);
         sleep(1000);
