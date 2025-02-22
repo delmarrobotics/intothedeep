@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import common.Robot;
 
-@Autonomous(name="Specimen Auto 2", group="Main")
-public class SpecimenAuto2 extends LinearOpMode {
+@Autonomous(name="Specimen Auto 3", group="Main")
+public class SpecimenAuto3 extends LinearOpMode {
 
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();
@@ -50,23 +50,25 @@ public class SpecimenAuto2 extends LinearOpMode {
         robot.arm.elbowMoveLeft(-1260);
         robot.arm.armMoveLeft(-1770);
         //sleep(1000);
-        robot.forward(33);
+        robot.forward(35);
         //robot.back(1);
         //robot.back(1.5);
         //sleep(200);
         robot.arm.elbowMoveLeft(-450);
-        sleep(300);
+        sleep(250);
         robot.arm.setSpecimenLeft(false);
         robot.back(12);
-        robot.turn(90);
-        robot.arm.elbowMoveLeft(366);
-        robot.arm.armMoveLeft(-393);
+        robot.arm.elbowMoveLeft(24);
+        robot.arm.armMoveLeft(25);
+        robot.strafeRight(44);
+        robot.forward(40);
+        robot.turn(180);
+        robot.strafeLeft(12);
         robot.forward(45);
-        robot.turn(90);
-        robot.strafeLeft(29);
-        robot.forwardSlow(21.5);
+        robot.strafeLeft(31);
+        robot.forward(20);
         robot.arm.setSpecimenLeft(true);
-        sleep(1500);
+        sleep(450);
         robot.back(16);
         robot.strafeRight(22);
         robot.turn(-90);
@@ -76,13 +78,34 @@ public class SpecimenAuto2 extends LinearOpMode {
         robot.turn(-90);
         robot.forward(17.5);
         robot.arm.elbowMoveLeft(-450);
-        sleep(300);
+        sleep(250);
+        robot.arm.setSpecimenLeft(false);
+        robot.back(14);
+        robot.turn(90);
+        robot.arm.elbowMoveLeft(24);
+        robot.arm.armMoveLeft(25);
+        robot.forward(59);
+        robot.turn(90);
+        robot.strafeLeft(17);
+        robot.forward(23.5);
+        robot.arm.setSpecimenLeft(true);
+        sleep(450);
+        robot.back(16);
+        robot.strafeRight(22);
+        robot.turn(-90);
+        robot.back(40);
+        robot.arm.elbowMoveLeft(-1260);
+        robot.arm.armMoveLeft(-1770);
+        robot.turn(-90);
+        robot.forward(18);
+        robot.arm.elbowMoveLeft(-450);
+        sleep(250);
         robot.arm.setSpecimenLeft(false);
         robot.back(12);
         robot.arm.elbowMoveLeft(0);
-        robot.arm.armMoveLeft(0);
-        robot.strafeRight(64);
-        robot.back(24);
+        robot.back(20);
+        robot.strafeRight(62);
+
         /*robot.arm.elbowMoveLeft(0);
         robot.arm.armMoveLeft(0);
         robot.strafeRight(38);

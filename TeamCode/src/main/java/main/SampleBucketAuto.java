@@ -46,53 +46,7 @@ public class SampleBucketAuto extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        //elbow -3224
+        robot.strafeRight(25);
 
-        //robot.vision.enableCameraStream(false);
-        /*paused for new arm
-        robot.strafeRight(25.5);
-        robot.arm.elbowMove(-2376);
-        sleep(500);
-        robot.arm.armMove(robot.arm.ARM_OUT_HIGH);
-        sleep(2500);
-        robot.forward(27);
-        //sleep(750);
-        robot.arm.intakeSet(Arm.intakeStates.REVERSE);
-        sleep(1500);
-        robot.arm.intakeSet(Arm.intakeStates.OFF);
-        robot.back(27);
-        robot.arm.elbowMove(0);
-        robot.arm.armMove(0);
-        sleep(1500);
-        robot.turn(-51);
-        robot.back(4);
-        robot.strafeRight(13);
-        robot.arm.wristMove(Arm.intakeStates.FORWARD);
-        robot.arm.intakeSet(Arm.intakeStates.FORWARD);
-        robot.arm.armMove(-1244);
-        robot.arm.elbowMove(200);
-        sleep(200);
-        robot.arm.wristMove(Arm.intakeStates.OFF);
-        sleep(1800);
-        robot.arm.elbowMove(0);
-        robot.arm.armMove(0);
-        robot.strafeLeft(13);
-        robot.turn(51);
-        robot.arm.wristMove(Arm.intakeStates.REVERSE);
-        robot.arm.elbowMove(-2376);
-        sleep(200);
-        robot.arm.wristMove(Arm.intakeStates.OFF);
-        robot.arm.armMove(robot.arm.ARM_OUT_HIGH);
-        sleep(2000);
-        robot.forward(27);
-        robot.arm.intakeSet(Arm.intakeStates.REVERSE);
-        sleep(2000);
-        robot.arm.intakeSet(Arm.intakeStates.OFF);
-        robot.back(27);
-        robot.arm.elbowMove(0);
-        robot.arm.armMove(0);
-        robot.turn(-51);
-        robot.back(82);
-        robot.strafeLeft(30);*/
     }
 }

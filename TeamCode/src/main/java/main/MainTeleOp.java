@@ -74,7 +74,12 @@ public class MainTeleOp extends LinearOpMode {
 
             if (mode == GamepadMode.TWO) {
                 robot.arm.specimenLeft.setPosition(gamepad1.right_trigger * 0.04 + 0.7);
-                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                if (gamepad2.right_trigger > 0) {
+                    robot.arm.specimenRight.setPosition(0.9);
+                } else if(gamepad2.left_trigger > 0) {
+                    robot.arm.specimenRight.setPosition(0.3);
+                }
+                //robot.arm.specimenRight.setPosition(1 - (gamepad2.right_trigger * 0.6 + 0.1));
                 robot.arm.controlLeft();
                 robot.arm.controlRight();
                 if (gamepad1.right_bumper) {
@@ -94,7 +99,12 @@ public class MainTeleOp extends LinearOpMode {
                     continue;*/
                 robot.arm.control();
             } else if (mode == GamepadMode.THREE) {
-                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.6 + 0.1);
+                if (gamepad2.right_trigger > 0) {
+                    robot.arm.specimenRight.setPosition(0.9);
+                } else if(gamepad2.left_trigger > 0) {
+                    robot.arm.specimenRight.setPosition(0.3);
+                }
+                //robot.arm.specimenRight.setPosition(1 - (gamepad2.right_trigger * 0.6 + 0.1));
                 robot.arm.specimenLeft.setPosition(0.7);
                 robot.arm.controlRight();
 
@@ -108,11 +118,13 @@ public class MainTeleOp extends LinearOpMode {
                     Logger.message("Changed split mode (to FOUR) at %f", runtime.seconds());
                     mode = GamepadMode.FOUR;
                     modeSplit = GamepadMode.FOUR;
-                    while (gamepad1.left_bumper) sleep(100);
+                    while (gamepad2.left_bumper) sleep(100);
+                }
+                if (gamepad1.b) {
                 }
             } else if (mode == GamepadMode.FOUR) {
                 robot.arm.specimenLeft.setPosition(gamepad2.right_trigger * 0.04 + 0.7);
-                robot.arm.specimenRight.setPosition(0.1);
+                robot.arm.specimenRight.setPosition(1 - (0.1));
                 robot.arm.controlLeft2();
 
                 if (gamepad1.right_bumper) {
@@ -125,7 +137,7 @@ public class MainTeleOp extends LinearOpMode {
                     Logger.message("Changed split mode (to THREE) at %f", runtime.seconds());
                     mode = GamepadMode.THREE;
                     modeSplit = GamepadMode.THREE;
-                    while (gamepad1.left_bumper) sleep(100);
+                    while (gamepad2.left_bumper) sleep(100);
                 }
             }
 

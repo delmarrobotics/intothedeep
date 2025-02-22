@@ -38,6 +38,8 @@ public class Robot {
      */
     public void init() {
 
+        Logger.addLine("Mycelium Engine v3.9.8");
+
         drive = new Drive(opMode);
         arm = new Arm(opMode);
 

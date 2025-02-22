@@ -44,10 +44,16 @@ public class TA extends LinearOpMode {
 
         //robot.vision.enableCameraStream(false);
         //paused for new arm
-        //robot.turn(360);
+        robot.turn(90);
+        robot.forwardFast(60);
+        robot.arm.elbowMoveLeft(-1260);
+        robot.arm.armMoveLeft(-1770);
+        robot.turn(90);
         robot.forward(24);
+        sleep(30000);
+        /*robot.forward(24);
         sleep(1000);
         robot.back(24);
-        sleep(1000);
+        sleep(1000);*/
     }
 }

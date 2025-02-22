@@ -89,8 +89,8 @@ public class Arm {
     private boolean armActiveLeft = false;
     private boolean armActiveRight = false;
 
-    public double pos1 = 0.4513888888888887;
-    public double pos2 = 0.546527777777778;
+    public double pos1 = 0.7701388888888819;
+    public double pos2 = 0.4915277777777791;
 
     public LinearOpMode opMode;
 
@@ -595,7 +595,7 @@ public class Arm {
                         "  b - position arm at mid position\n" +
                         "  x - position arm at high position\n" +
                         "  y - position arm at pickup position\n" +
-                        "  right triggers - drop pixels\n" +
+                        "  right trigger - drop sample\n" +
                         rightElbow.getCurrentPosition() + "\n"
                 //"  left stick - move elbow (u/d)  arm (l/r)\n" +
                 //"  right stick - manual rotate the hands\n"
@@ -605,7 +605,7 @@ public class Arm {
                         "  b - position arm at mid position\n" +
                         "  x - position arm at high position\n" +
                         "  y - position arm at pickup position\n" +
-                        "  right triggers - drop pixels\n" +
+                        "  right trigger - drop specimen\n" +
                         leftElbow.getCurrentPosition() + "\n"
                 //"  left stick - move elbow (u/d)  arm (l/r)\n" +
                 //"  right stick - manual rotate the hands\n"
@@ -1037,7 +1037,7 @@ public class Arm {
 
         /*right joystick left and right moves 1st servo (vel)
         right y - 2nd servo l & r (accel)
-        right_trigger controls specimen (jerk, but mostly known as specimenLeft)
+        right_trigger controls specimen (mostly known as specimenLeft)
          */
 
         /*if(gamepad2.right_bumper) {
@@ -1114,8 +1114,8 @@ public class Arm {
 
         if (gamepad2.right_stick_x != 0) {
             if (Double.isNaN(pos1)) {
-                vel.setPosition(0.4513888888888887);
-                pos1 = 0.4513888888888887;
+                vel.setPosition(0.7701388888888819);
+                pos1 =  0.7701388888888819;
             }
             if (gamepad2.right_stick_x > 0) {
                 pos1 += 0.00125;
@@ -1129,14 +1129,14 @@ public class Arm {
 
         if (gamepad2.right_stick_y != 0) {
             if (Double.isNaN(pos2)) {
-                accel.setPosition(0.546527777777778);
-                pos2 = 0.546527777777778;
+                accel.setPosition(0.4915277777777791);
+                pos2 = 0.4915277777777791;
             }
             if (gamepad2.right_stick_y > 0) {
-                pos2 += 0.00125;
+                pos2 += 0.0045;
                 accel.setPosition(pos2);
             } else {
-                pos2 -= 0.00125;
+                pos2 -= 0.0045;
                 accel.setPosition(pos2);
             }
             Logger.message("accel position " + pos2);
