@@ -526,10 +526,10 @@ public class Drive extends Thread {
             leftBackDrive.setPower((rampPower + leftBackAdjust) * leftBackSign);
             rightBackDrive.setPower((rampPower + rightBackAdjust) * rightBackSign);*/
 
-            leftFrontDrive.setPower(leftFrontSign);
-            rightFrontDrive.setPower(rightFrontSign);
-            leftBackDrive.setPower(leftBackSign);
-            rightBackDrive.setPower(rightBackSign);
+            leftFrontDrive.setPower(rampPower * leftFrontSign);
+            rightFrontDrive.setPower(rampPower * rightFrontSign);
+            leftBackDrive.setPower(rampPower * leftBackSign);
+            rightBackDrive.setPower(rampPower * rightBackSign);
 
             for (DcMotor motor : motors)
                 if (! motor.isBusy())

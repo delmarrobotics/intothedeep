@@ -312,27 +312,27 @@ public class Arm {
 
     public void setSpecimenLeft(boolean enable) {
         if (enable) {
-            specimenLeft.setPosition(0);
+            specimenLeft.setPosition(0.04);
         } else {
-            specimenLeft.setPosition(1);
+            specimenLeft.setPosition(0.08);
         }
     }
 
     public void setSpecimenRight(boolean enable) {
         if (enable) {
-            specimenRight.setPosition(0.360);
+            specimenRight.setPosition(0);
         } else {
-            specimenRight.setPosition(0.525);
+            specimenRight.setPosition(0.39225);
         }
     }
 
     public void setSpecimen(boolean enable) {
         if (enable) {
-            specimenRight.setPosition(0.360);
-            specimenLeft.setPosition(0);
+            specimenRight.setPosition(0);
+            specimenLeft.setPosition(0.04);
         } else {
-            specimenRight.setPosition(0.525);
-            specimenLeft.setPosition(1);
+            specimenRight.setPosition(0.39225);
+            specimenLeft.setPosition(0.08);
         }
     }
 

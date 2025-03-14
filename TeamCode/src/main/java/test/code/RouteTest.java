@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import common.Config;
 import common.Drive;
 import common.Logger;
-import common.Odometer;
+//import common.Odometer;
 import common.Settings;
 
 @TeleOp(name="Route Test", group="Test")
@@ -26,7 +26,7 @@ public class RouteTest extends LinearOpMode {
 
     private double factor;
 
-    private Odometer sideOdometer;
+    //private Odometer sideOdometer;
 
     private static final double ODOMETER_TICKS_PER_REV = 2000;
     private static final double ODOMETER_WHEEL_DIAMETER = 1.90278;  //  1.92913;       // 0.9863 in inches, 48mm diameter
@@ -43,7 +43,7 @@ public class RouteTest extends LinearOpMode {
     public void runOpMode() {
         drive = new Drive(this);
 
-        sideOdometer = new Odometer(hardwareMap, Config.LEFT_FRONT, Odometer.OdometerType.MOTOR);
+        //sideOdometer = new Odometer(hardwareMap, Config.LEFT_FRONT, Odometer.OdometerType.MOTOR);
 
         telemetry.addLine("push start");
         telemetry.update();
@@ -133,7 +133,7 @@ public class RouteTest extends LinearOpMode {
                 while (gamepad1.start) sleep(100);
             }
 
-            traveled1Msg.setValue("%f", (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH);
+            //raveled1Msg.setValue("%f", (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH);
             telemetry.update();
          }
     }
@@ -173,7 +173,7 @@ public class RouteTest extends LinearOpMode {
 
     private void moveForwardBackward (Drive.DIRECTION direction, double inches) {
 
-        double odometerStart = (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH;
+        //double odometerStart = (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH;
 
         if (direction == Drive.DIRECTION.FORWARD)
             drive.forward(inches);
@@ -186,8 +186,8 @@ public class RouteTest extends LinearOpMode {
             sleep(100);
         } while (traveled != drive.getDistanceTraveled());
 
-        double odometerEnd = (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH;
-        traveled1Msg.setValue(INCHES_FORMAT, odometerEnd - odometerStart);
+        //double odometerEnd = (double)sideOdometer.getCurrentPosition() / ODOMETER_COUNTS_PER_INCH;
+        //raveled1Msg.setValue(INCHES_FORMAT, odometerEnd - odometerStart);
         traveled2Msg.setValue(INCHES_FORMAT, drive.getDistanceTraveled());
         telemetry.update();
     }

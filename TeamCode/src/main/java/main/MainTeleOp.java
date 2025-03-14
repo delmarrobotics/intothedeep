@@ -73,8 +73,8 @@ public class MainTeleOp extends LinearOpMode {
             }
 
             if (mode == GamepadMode.TWO) {
-                robot.arm.specimenLeft.setPosition(gamepad1.right_trigger * 0.04 + 0.7);
-                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.165 + 0.360);
+                robot.arm.specimenLeft.setPosition(gamepad1.right_trigger * 0.04 + 0.04);
+                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.39225 + 0);
                 robot.arm.controlLeft();
                 robot.arm.controlRight();
                 if (gamepad1.right_bumper) {
@@ -94,8 +94,8 @@ public class MainTeleOp extends LinearOpMode {
                     continue;*/
                 robot.arm.control();
             } else if (mode == GamepadMode.THREE) {
-                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.165 + 0.360);
-                robot.arm.specimenLeft.setPosition(0.7);
+                robot.arm.specimenRight.setPosition(gamepad2.right_trigger * 0.39225 + 0);
+                robot.arm.specimenLeft.setPosition(0.04);
                 robot.arm.controlRight();
 
                 if (gamepad1.right_bumper) {
@@ -113,8 +113,8 @@ public class MainTeleOp extends LinearOpMode {
                 if (gamepad1.b) {
                 }
             } else if (mode == GamepadMode.FOUR) {
-                robot.arm.specimenLeft.setPosition(gamepad2.right_trigger * 0.04 + 0.7);
-                robot.arm.specimenRight.setPosition(0.360);
+                robot.arm.specimenLeft.setPosition(gamepad2.right_trigger * 0.04 + 0.04);
+                robot.arm.specimenRight.setPosition(0);
                 robot.arm.controlLeft2();
 
                 if (gamepad1.right_bumper) {
